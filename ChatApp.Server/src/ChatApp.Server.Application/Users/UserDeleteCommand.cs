@@ -13,7 +13,7 @@ internal sealed class UserDeleteCommandHandler(
     public async Task<Result<string>> Handle(UserDeleteCommand request, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByIdAsync(request.Id.ToString());
-        if (user == null)
+        if (user is null)
             return Result<string>.Failure("User not found");
 
         user.IsDeleted = true;

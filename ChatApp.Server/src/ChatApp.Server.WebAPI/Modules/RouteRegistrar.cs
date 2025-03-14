@@ -7,5 +7,7 @@ public static class RouteRegistrar
         app.RegisterEmployeeRoutes();
         app.RegisterAuthRoutes();
         app.RegisterUserRoutes();
+        app.RegisterChannelRoutes();
+        app.RegisterChatRoutes();
     }
 }

@@ -5,7 +5,7 @@ namespace ChatApp.Server.Domain.Roles;
 
 public sealed class AppRole:IdentityRole<Guid>
 {
-
+    public Guid ChannelId { get; set; } = default!;
     #region Audit Log
     public bool IsActive { get; set; } = true;
     public DateTimeOffset CreatedAt { get; set; }
