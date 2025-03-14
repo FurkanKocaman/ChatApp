@@ -1,0 +1,27 @@
+.animated-border {
+  position: relative;
+}
+
+.animated-border::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.5px; /* Çizginin kalınlığı */
+  background: linear-gradient(90deg, red, blue, green, yellow, red);
+  background-size: 300% 100%;
+  animation: animateBorder 10s linear infinite;
+}
+
+@keyframes animateBorder {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

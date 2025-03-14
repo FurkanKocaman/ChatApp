@@ -1,0 +1,104 @@
+<main class="w-full h-full flex justify-center items-center">
+  <form
+    class="w-full max-w-xl mx-auto bg-neutral-900/30 p-10 rounded-xl"
+    (ngSubmit)="register()"
+  >
+    <h1
+      class="w-full mb-14 text-3xl dark:text-gray-200 font-semibold text-center"
+    >
+      Register
+    </h1>
+    <div class="flex w-full">
+      <div class="mb-5 w-full mr-2">
+        <label
+          for="firstname"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Firstname</label
+        >
+        <input
+          type="text"
+          id="firstname"
+          name="firstname"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none border-none dark:bg-neutral-700 dark:text-gray-200 block w-full p-2.5"
+          required
+          [(ngModel)]="registerReq.firstname"
+        />
+      </div>
+      <div class="mb-5 w-full ml-2">
+        <label
+          for="lastname"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >Email or username</label
+        >
+        <input
+          type="text"
+          id="lastname"
+          name="lastname"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none border-none dark:bg-neutral-700 dark:text-gray-200 block w-full p-2.5"
+          required
+          [(ngModel)]="registerReq.lastname"
+        />
+      </div>
+    </div>
+    <div class="mb-5">
+      <label
+        for="username"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Username</label
+      >
+      <input
+        type="text"
+        id="username"
+        name="username"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none border-none dark:bg-neutral-700 dark:text-gray-200 block w-full p-2.5"
+        required
+        [(ngModel)]="registerReq.username"
+      />
+    </div>
+
+    <div class="mb-5">
+      <label
+        for="email"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Email</label
+      >
+      <input
+        type="email"
+        id="email"
+        name="email"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none border-none dark:bg-neutral-700 dark:text-gray-200 block w-full p-2.5"
+        required
+        [(ngModel)]="registerReq.email"
+      />
+    </div>
+    <div class="mb-5">
+      <label
+        for="password"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Password</label
+      >
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none border-none dark:bg-neutral-700 dark:text-gray-200 block w-full p-2.5"
+        required
+        [(ngModel)]="registerReq.password"
+      />
+    </div>
+    <div class="my-3">
+      <label
+        class="text-sm font-medium text-gray-900 dark:text-gray-300 hover:border-b cursor-pointer"
+        [routerLink]="['/auth', 'login']"
+        >Do you have an account?</label
+      >
+    </div>
+
+    <button
+      type="submit"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Register
+    </button>
+  </form>
+</main>

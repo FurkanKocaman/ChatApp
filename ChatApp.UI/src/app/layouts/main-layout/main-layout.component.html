@@ -1,0 +1,16 @@
+<div class="flex h-screen text-white flex-col md:flex-row">
+  <app-channel-list></app-channel-list>
+  <!-- Chat List -->
+  <app-chat-list [ngClass]="{ hidden: !isCurrentChannel }"></app-chat-list>
+
+  <!-- Chat Window -->
+  <app-chat-room
+    [ngClass]="{ hidden: !isCurrentChannel }"
+    class="w-full h-full"
+  ></app-chat-room>
+
+  <app-chat-users
+    [ngClass]="{ hidden: !isCurrentChannel }"
+    class="w-1/6"
+  ></app-chat-users>
+</div>

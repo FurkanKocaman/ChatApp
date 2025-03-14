@@ -1,0 +1,213 @@
+<aside id="logo-sidebar" class="h-full w-fit bg-gray-50 dark:bg-neutral-950">
+  <div
+    [ngClass]="{ 'w-16': !isListExpanded, 'w-48': isListExpanded }"
+    class="flex flex-col h-full justify-between items-start transition-all duration-200 ease-in-out"
+  >
+    <div
+      class="flex flex-col items-start h-full overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:rounded-sm"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-10 min-h-10 stroke-2 stroke-gray-300 cursor-pointer hover:stroke-white select-none rounded-md ml-2 mt-2"
+        viewBox="0 0 24 24"
+        (click)="expandList()"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"
+        />
+      </svg>
+
+      <ul
+        class="font-medium flex flex-col items-center justify-center overflow-y-auto mt-2"
+      >
+        @for(channel of channels;track channel.id){
+        <li
+          class="group relative hover:bg-neutral-700/50 rounded-md cursor-pointer flex flex-row items-center w-full px-2 py-1"
+          (click)="setCurrentChannel(channel)"
+        >
+          @if(channel.channelImageUrl != ""){
+          <img
+            class="size-10 rounded-full"
+            src=" {{ channel.channelImageUrl }} "
+            alt=""
+          />
+          }@else {
+          <img
+            class="size-10 min-w-10 rounded-full"
+            src="https://picsum.photos/200/300"
+            alt=""
+          />
+          }
+
+          <span
+            class="hidden absolute top-0 right-0 bg-green-600 z-20 rounded-full"
+            >aaa</span
+          >
+          <span
+            [ngClass]="{ hidden: !isListExpanded }"
+            class="hidden dark:text-gray-300 ml-2 truncate max-w-32 transition-opacity duration-1000 ease-in-out"
+          >
+            {{ channel.name }} aaaaaaaaaaaaaaaa aa
+          </span>
+          <span
+            [ngClass]="{ 'group-hover:block': !isListExpanded }"
+            class="fixed hidden left-16 text-gray-300 dark:bg-stone-700/50 px-4 py-2 rounded-md"
+            >{{ channel.name }}</span
+          >
+        </li>
+
+        }
+        <li
+          class="group relative rounded-md cursor-pointer flex flex-row items-center w-full mt-2 px-2"
+          (click)="toggleChannelCreating()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="size-10 stroke-2 stroke-gray-400 hover:stroke-white"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+          <span
+            [ngClass]="{ 'group-hover:block': !isListExpanded }"
+            class="fixed hidden left-16 text-gray-300 dark:bg-stone-700/50 px-4 py-2 rounded-md"
+            >Create Channel</span
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="relative flex items-center w-full ml-2 mb-2 group">
+      <div
+        class="hidden absolute bottom-12 bg-white group-hover:block rounded-md divide-y divide-gray-100 shadow-sm dark:bg-neutral-900 dark:divide-neutral-700"
+      >
+        <ul
+          class="py-2 text-sm text-stone-500 dark:text-gray-400"
+          aria-labelledby="dropdownLargeButton"
+        >
+          <li
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-stone-700 dark:hover:text-white cursor-pointer"
+            [routerLink]="['/profile']"
+          >
+            Profile
+          </li>
+          <li
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-stone-700 dark:hover:text-white cursor-pointer"
+            [routerLink]="['/profile/settings']"
+          >
+            Settings
+          </li>
+          <li
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-stone-700 dark:hover:text-white cursor-pointer"
+            [routerLink]="['/profile/channels']"
+          >
+            Channels
+          </li>
+        </ul>
+        <div class="py-1">
+          <span
+            href="#"
+            class="block px-4 py-2 text-sm text-stone-700 hover:bg-gray-100 dark:hover:bg-stone-700 dark:text-stone-400 dark:hover:text-white cursor-pointer"
+            (click)="logout()"
+            >Sign out</span
+          >
+        </div>
+      </div>
+      <img
+        [src]="envImageUrl"
+        alt="Profile Image Url"
+        class="w-12 h-12 rounded-full object-cover"
+      />
+      <span
+        [ngClass]="{ hidden: !isListExpanded }"
+        class="dark:text-gray-300 ml-2 truncate max-w-32"
+      >
+        {{ user?.userName }}
+      </span>
+    </div>
+  </div>
+</aside>
+<!-- 
+<div
+  [ngClass]="{ hidden: !isChannelCreating }"
+  class="relative z-10"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+>
+
+  <div
+    class="fixed inset-0 bg-gray-500/75 transition-opacity"
+    aria-hidden="true"
+  ></div>
+
+  <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+    <div
+      class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+    >
+
+      <div
+        class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+      >
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div
+              class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10"
+            >
+              <svg
+                class="size-6 text-red-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                aria-hidden="true"
+                data-slot="icon"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                />
+              </svg>
+            </div>
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3
+                class="text-base font-semibold text-gray-900"
+                id="modal-title"
+              >
+                Deactivate account
+              </h3>
+              <div class="mt-2">
+                <p class="text-sm text-gray-500">
+                  Are you sure you want to deactivate your account? All of your
+                  data will be permanently removed. This action cannot be
+                  undone.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+          <button
+            type="button"
+            class="inline-flex w-full justify-center rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-sky-500 sm:ml-3 sm:w-auto"
+          >
+            Create
+          </button>
+          <button
+            type="button"
+            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto"
+            (click)="toggleChannelCreating()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

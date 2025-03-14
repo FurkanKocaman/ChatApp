@@ -1,0 +1,85 @@
+<nav
+  class="bg-white animated-border dark:bg-neutral-900/30 w-full p-1 flex justify-between"
+>
+  <div class="w-fit m-1">
+    <h3
+      class="text-xl p-1 font-semibold text-neutral-700 dark:text-neutral-400"
+    >
+      {{ currentChannel?.name }}
+      @if(currentChat){
+      <span class="text-base"> > {{ currentChat.name }}</span>
+      }
+    </h3>
+  </div>
+  <div class="relative flex items-center">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="absolute stroke-1 stroke-gray-400 size-5 mx-2 fill-none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+      />
+    </svg>
+    <input
+      type="text"
+      id="search"
+      class="bg-gray-50 border min-w-40 pl-8 max-w-xl border-none text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 dark:bg-stone-700 0 dark:text-gray-300"
+    />
+  </div>
+  <div class="flex flex-row items-center ml-10 mr-5">
+    <img
+      class="size-10 rounded-full my-1 mr-2"
+      src="{{ envImageUrl + currentUser?.profileImageUrl }}"
+      alt="Profile Image"
+    />
+    <span class="dark:text-gray-400"> {{ currentUser?.userName }} </span>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      class="size-6 dark:fill-gray-400 dark:hover:fill-white ml-10 cursor-pointer select-none"
+      (click)="toggleDropdown()"
+    >
+      <path
+        d="M10 3.75a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM17.25 4.5a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM5 3.75a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75ZM4.25 17a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM17.25 17a.75.75 0 0 0 0-1.5h-5.5a.75.75 0 0 0 0 1.5h5.5ZM9 10a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1 0-1.5h5.5A.75.75 0 0 1 9 10ZM17.25 10.75a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5h1.5ZM14 10a2 2 0 1 0-4 0 2 2 0 0 0 4 0ZM10 16.25a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"
+      />
+    </svg>
+    <div
+      [ngClass]="{ hidden: !isDropdownOpen }"
+      id="dropdownNavbar"
+      class="z-10 absolute top-14 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-stone-800 dark:divide-stone-900"
+    >
+      <ul
+        class="py-2 text-sm text-stone-500 dark:text-gray-400"
+        aria-labelledby="dropdownLargeButton"
+      >
+        <li
+          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-stone-700 dark:hover:text-white cursor-pointer"
+          [routerLink]="['../profile']"
+        >
+          Profile
+        </li>
+        <li
+          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-stone-700 dark:hover:text-white cursor-pointer"
+        >
+          Settings
+        </li>
+        <li
+          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-stone-700 dark:hover:text-white cursor-pointer"
+        >
+          Channels
+        </li>
+      </ul>
+      <div class="py-1">
+        <span
+          href="#"
+          class="block px-4 py-2 text-sm text-stone-700 hover:bg-gray-100 dark:hover:bg-stone-700 dark:text-stone-400 dark:hover:text-white cursor-pointer"
+          (click)="logout()"
+          >Sign out</span
+        >
+      </div>
+    </div>
+  </div>
+</nav>

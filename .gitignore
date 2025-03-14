@@ -1,0 +1,73 @@
+# IDE ve Editör Dosyaları
+.vs/
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates
+*.user
+*.rsuser
+*.sln.cache
+
+# Derlenmiş Dosyalar ve Çıktılar
+bin/
+obj/
+out/
+publish/
+AppPackages/
+
+# wwwroot klasörünü Git'e dahil etme
+!/ChatAppBackend/wwwroot/
+
+# Log ve Hata Kayıt Dosyaları
+logs/
+*.log
+*.tlog
+
+# Debug ve Çalışma Zamanı Dosyaları
+*.pdb
+*.ilk
+*.ipch
+*.cache
+*.csproj.user
+*.tmp
+*.dbmdl
+*.jfm
+
+# Bağımlılıklar (NuGet, npm, Yarn)
+packages/
+package-lock.json
+yarn.lock
+node_modules/
+bower_components/
+
+# Docker ve Konteyner Dosyaları
+docker-compose.override.yml
+*.dockerfile
+
+# Gizli ve Yapılandırma Dosyaları
+appsettings.json
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+.env
+
+# Test Sonuçları ve Kod Kapsama (Coverage) Dosyaları
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# SQL Server ve Veritabanı Dosyaları
+*.mdf
+*.ldf
+
+# Linux/MacOS Sistem Dosyaları
+.DS_Store
+._*
+.Trashes
+*.swp
+
+# .NET CLI Cache
+.nuget/

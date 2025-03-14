@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ChatApp</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" />
+    <style>
+      /* Kaydırma çubuğu özelleştirmeleri */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background-color: #f3f4f6; /* bg-gray-100 */
+        border-radius: 0.125rem; /* rounded-sm */
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: #d1d5db; /* bg-gray-300 */
+        border-radius: 0.125rem; /* rounded-sm */
+      }
+
+      /* Karanlık mod için kaydırma çubuğu özelleştirmeleri */
+      .dark ::-webkit-scrollbar-track {
+        background-color: #171717; /* bg-neutral-900 */
+      }
+
+      .dark ::-webkit-scrollbar-thumb {
+        background-color: #404040; /* bg-neutral-700 */
+      }
+    </style>
+  </head>
+
+  <body class="dark h-screen w-screen dark:bg-neutral-800 bg-neutral-100">
+    <app-root></app-root>
+  </body>
+</html>
