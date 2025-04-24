@@ -17,8 +17,8 @@ public sealed class UserGetQueryResponse : EntityDto
     public string Email { get; set; } = default!;
     public string? ProfileImageUrl { get; set; }
     public string? RefreshToken { get; set; }
-    public bool isOnline { get; set; } = false;
-    public DateTimeOffset BirthOfDate { get; set; }
+    public UserStatus Status{ get; set; }
+    public DateTimeOffset? BirthOfDate { get; set; }
     public bool? Gender { get; set; }
     public DateTimeOffset? LastActive { get; set; }
 }
@@ -40,9 +40,9 @@ internal sealed class UserGetQueryHandler(UserManager<AppUser> userManager)
                               FullName = u.FullName,
                               UserName = u.UserName!,
                               Email = u.Email!,
-                              ProfileImageUrl = u.ProfileImageUrl,
+                              ProfileImageUrl = u.AvatarUrl,
                               RefreshToken = u.RefreshToken,
-                              isOnline = u.isOnline,
+                              Status = u.Status,
                               BirthOfDate = u.BirthOfDate,
                               Gender = u.Gender,
                               LastActive = u.LastActive,

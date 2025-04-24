@@ -1,5 +1,4 @@
 ﻿using ChatApp.Server.Application.Auth;
-using ChatApp.Server.Application.Employees;
 using MediatR;
 using TS.Result;
 
