@@ -1,11 +1,14 @@
-﻿using ChatApp.Server.Domain.Abstractions;
+﻿using ChatApp.Server.Domain.ServerMemberRoles;
 using Microsoft.AspNetCore.Identity;
 
 namespace ChatApp.Server.Domain.Roles;
 
 public sealed class AppRole:IdentityRole<Guid>
 {
-    public Guid ChannelId { get; set; } = default!;
+    public Guid ServerId { get; set; } = default!;
+    public Servers.Server? Server { get; set; }
+    public string? ColorHex { get; set; }
+    public ICollection<ServerMemberRole> ServerMemberRoles { get; set; } = new List<ServerMemberRole>();
     #region Audit Log
     public bool IsActive { get; set; } = true;
     public DateTimeOffset CreatedAt { get; set; }

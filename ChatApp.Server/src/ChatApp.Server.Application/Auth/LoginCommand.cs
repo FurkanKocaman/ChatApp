@@ -20,6 +20,7 @@ public sealed record LoginCommandResponse
 internal sealed class LoginCommandHandler(
     UserManager<AppUser> userManager, 
     SignInManager<AppUser> signInManager,
+    IEmailService emailService,
     IJwtProvider jwtProvider) : IRequestHandler<LoginCommand, Result<LoginCommandResponse>>
 {
     public async Task<Result<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -43,7 +44,12 @@ internal sealed class LoginCommandHandler(
 
         if (signInResult.IsNotAllowed)
         {
-            return (500, "Your mail is not confirmed");
+            string emailConfirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            string confirmationLink = $"https://localhost:7063/auth/confirm-email?userId={user.Id}&token={Uri.EscapeDataString(emailConfirmationToken)}";
+
+            await emailService.SendAsync(user.Email!, "Email Confirmation Link", $"<p>E-posta adresinizi doğrulamak için aşağıdaki bağlantıya tıklayın:</p><a href={confirmationLink}>E-posta Doğrula</a>", cancellationToken);
+
+            return (500, "Confirmation link send to email");
         }
         if (!signInResult.Succeeded)
         {

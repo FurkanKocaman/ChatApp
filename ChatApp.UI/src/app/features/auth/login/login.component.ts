@@ -1,26 +1,27 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { LoginRequest } from '../../../core/models/login-req.model';
-import { AuthService } from '../../../core/services/auth.service';
-import { UserService } from '../../../core/services/user.service';
+import { Component } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { RouterLink } from "@angular/router";
+import { LoginRequest } from "../../../core/models/login-req.model";
+import { AuthService } from "../../../core/services/auth.service";
+import { ThemeService } from "../../../core/services/theme.service";
 
 @Component({
-  selector: 'app-login',
+  selector: "app-login",
   standalone: true,
   imports: [FormsModule, RouterLink],
-  templateUrl: './login.component.html',
-  styleUrl: 'login.component.css',
+  templateUrl: "./login.component.html",
+  styleUrl: "login.component.css",
 })
 export class LoginComponent {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private themeService: ThemeService) {}
   loginReq: LoginRequest = {
-    UserNameOrEmail: '',
-    Password: '',
+    UserNameOrEmail: "",
+    Password: "",
     RememberMe: false,
   };
 
   isLoading: boolean = false;
+  isDark: boolean = this.themeService.isDarkMode();
 
   login(): void {
     this.isLoading = true;
@@ -34,5 +35,10 @@ export class LoginComponent {
         this.isLoading = false;
       },
     });
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+    this.isDark = this.themeService.isDarkMode();
   }
 }

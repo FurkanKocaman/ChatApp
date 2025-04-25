@@ -1,7 +1,6 @@
 ﻿using ChatApp.Server.Application.Services;
 using ChatApp.Server.Domain.Users;
 using ChatApp.Server.Infrastructure.Options;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,20 +10,19 @@ using System.Text;
 namespace ChatApp.Server.Infrastructure.Service;
 
 internal sealed class JwtProvider(
-    IOptions<JwtOptions> options,
-    UserManager<AppUser> userManager) : IJwtProvider
+    IOptions<JwtOptions> options) : IJwtProvider
 {
     public Task<string> CreateTokenAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        var roles = userManager.GetRolesAsync(user).Result;
+        //var roles = userManager.GetRolesAsync(user).Result;
         List<Claim> claims = new()
         {
             new Claim(ClaimTypes.NameIdentifier,user.Id.ToString())
         };
-        foreach (var role in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
+        //foreach (var role in roles)
+        //{
+        //    claims.Add(new Claim(ClaimTypes.Role, role));
+        //}
 
         var expires = DateTime.Now.AddDays(1);
 

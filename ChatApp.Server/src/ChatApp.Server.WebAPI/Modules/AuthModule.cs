@@ -1,5 +1,4 @@
 ﻿using ChatApp.Server.Application.Auth;
-using ChatApp.Server.Application.Employees;
 using MediatR;
 using TS.Result;
 
@@ -18,5 +17,21 @@ public static class AuthModule
                 return response.IsSuccessful ? Results.Ok(response) : Results.InternalServerError(response);
             })
             .Produces<Result<LoginCommandResponse>>();
+
+        group.MapPost("register",
+           async (ISender sender, RegisterCommand request, CancellationToken cancellationToken) =>
+           {
+               var response = await sender.Send(request, cancellationToken);
+               return response.IsSuccessful ? Results.Ok(response) : Results.InternalServerError(response);
+           })
+           .Produces<Result<LoginCommandResponse>>();
+
+        group.MapGet("confirm-email",
+           async (ISender sender, [AsParameters]ConfirmEmailCommand request, CancellationToken cancellationToken) =>
+           {
+               var response = await sender.Send(request, cancellationToken);
+               return response.IsSuccessful ? Results.Ok(response) : Results.InternalServerError(response);
+           })
+           .Produces<Result<string>>();
     }
 }
