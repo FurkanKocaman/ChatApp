@@ -6,6 +6,7 @@ using ChatApp.Server.Domain.DirectMessages;
 using ChatApp.Server.Domain.FriendShips;
 using ChatApp.Server.Domain.Messages;
 using ChatApp.Server.Domain.Roles;
+using ChatApp.Server.Domain.ServerMemberRoles;
 using ChatApp.Server.Domain.ServerMembers;
 using ChatApp.Server.Domain.UserRoles;
 using ChatApp.Server.Domain.Users;
@@ -32,14 +33,11 @@ internal sealed class ApplicationDbContext: IdentityDbContext<AppUser, AppRole, 
     public DbSet<Conversation> Conversations { get; set; } = default!;
     public DbSet<ConversationParticipant> ConversationParticipants { get; set; } = default!;
     public DbSet<DirectMessage> DirectMessages { get; set; } = default!;
-
-
-
+    public DbSet<ServerMemberRole> ServerMemberRoles { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-        modelBuilder.Ignore<IdentityRoleClaim<Guid>>();
         modelBuilder.Ignore<IdentityUserClaim<Guid>>();
         modelBuilder.Ignore<IdentityUserLogin<Guid>>();
         modelBuilder.Ignore<IdentityUserToken<Guid>>();
@@ -129,7 +127,17 @@ internal sealed class ApplicationDbContext: IdentityDbContext<AppUser, AppRole, 
             .HasForeignKey(p => p.ReceiverId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity<ServerMemberRole>()
+            .HasOne(p => p.AppRole)
+            .WithMany(p => p.ServerMemberRoles)
+            .HasForeignKey(p => p.AppRoleId)
+            .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity<ServerMemberRole>()
+            .HasOne(p => p.ServerMember)
+            .WithMany(p => p.ServerMemberRoles)
+            .HasForeignKey(p => p.ServerMemberId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

@@ -1,25 +1,21 @@
-import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { Routes } from "@angular/router";
+import { authGuard } from "./core/guards/auth.guard";
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'chat', pathMatch: 'full' },
+  { path: "", redirectTo: "chat", pathMatch: "full" },
   {
-    path: 'auth',
-    loadChildren: () =>
-      import('./features/auth/auth.route').then((m) => m.AUTH_ROUTES),
+    path: "auth",
+    loadChildren: () => import("./features/auth/auth.route").then((m) => m.AUTH_ROUTES),
   },
   {
-    path: 'chat',
+    path: "chat",
     loadComponent: () =>
-      import('./layouts/main-layout/main-layout.component').then(
-        (m) => m.MainLayoutComponent
-      ),
+      import("./layouts/chat-layout/chat-layout.component").then((m) => m.ChatLayoutComponent),
     canActivate: [authGuard],
   },
   {
-    path: 'profile',
-    loadChildren: () =>
-      import('./features/profile/profile.route').then((m) => m.PROFILE_ROUTES),
+    path: "profile",
+    loadChildren: () => import("./features/profile/profile.route").then((m) => m.PROFILE_ROUTES),
   },
   // { path: '', component: ChatPageComponent, canActivate: [authGuard] },
   // {

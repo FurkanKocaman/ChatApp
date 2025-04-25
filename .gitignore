@@ -1,4 +1,5 @@
 # IDE ve Editör Dosyaları
+.angular/
 .vs/
 .idea/
 .vscode/
@@ -71,3 +72,5 @@ coverage/
 
 # .NET CLI Cache
 .nuget/
+**/Migrations/
+**/wwwroot/

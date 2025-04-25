@@ -3,7 +3,7 @@ using ChatApp.Server.Infrastructure.Context;
 using GenericRepository;
 
 namespace ChatApp.Server.Infrastructure.Repositories;
-internal class ServerMemberRepository : Repository<ServerMember, ApplicationDbContext>, IServerMemberRepository
+internal sealed class ServerMemberRepository : Repository<ServerMember, ApplicationDbContext>, IServerMemberRepository
 {
     public ServerMemberRepository(ApplicationDbContext context) : base(context)
     {

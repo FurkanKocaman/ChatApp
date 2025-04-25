@@ -8,7 +8,7 @@ namespace ChatApp.Server.Application.Auth;
 public sealed record RegisterCommand(
     string FirstName,
     string LastName,
-    string Username,
+    string UserName,
     string Email,
     string Password,
     DateTimeOffset BirthOfDate,
@@ -16,7 +16,8 @@ public sealed record RegisterCommand(
     ) : IRequest<Result<LoginCommandResponse>>;
 
 internal sealed class RegisterCommandHandler(
-    UserManager<AppUser> userManager
+    UserManager<AppUser> userManager,
+    ISender sender
     ) : IRequestHandler<RegisterCommand, Result<LoginCommandResponse>>
 {
     public async Task<Result<LoginCommandResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -30,8 +31,14 @@ internal sealed class RegisterCommandHandler(
         user.CreatedAt = DateTimeOffset.Now;
         user.CreateUserId = user.Id;
 
-        await userManager.CreateAsync(user,request.Password);
+        IdentityResult result = await userManager.CreateAsync(user,request.Password);
 
-        return Result<LoginCommandResponse>()
+        if (!result.Succeeded)
+            return Result<LoginCommandResponse>.Failure("Error when user creation "+ result.Errors);
+
+        LoginCommand loginCommand = new(request.UserName, request.Password);
+        var loginResult = await sender.Send(loginCommand,cancellationToken);
+
+        return loginResult;
     }
 }

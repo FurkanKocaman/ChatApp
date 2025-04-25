@@ -10,7 +10,7 @@ public sealed class Server : Entity
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
     public string? IconUrl { get; set; }
-    public Guid OwnerId { get; set; }
+    public Guid OwnerId { get; set; } 
     public AppUser? Owner { get; set; }
     public ICollection<ServerMember> Members { get; set; } = new List<ServerMember>();
     public ICollection<Channel> Channels { get; set; } = new List<Channel>();
