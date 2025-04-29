@@ -14,7 +14,7 @@ public sealed record LoginCommand(
 public sealed record LoginCommandResponse
 {
     public string AccessToken { get; set; } = default!;
-    //public string RefreshToken { get; set; };
+    //public string RefreshToken { get; set; }; 
 }
 
 internal sealed class LoginCommandHandler(

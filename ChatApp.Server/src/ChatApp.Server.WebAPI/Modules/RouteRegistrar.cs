@@ -6,5 +6,8 @@ public static class RouteRegistrar
     { 
         app.RegisterAuthRoutes();
         app.RegisterUserRoutes();
+        app.RegisterServerRoutes();
+        app.RegisterChannelRoutes();
+        app.RegisterMessageRoutes();
     }
 }

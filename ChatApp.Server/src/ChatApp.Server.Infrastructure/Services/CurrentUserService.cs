@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace ChatApp.Server.Infrastructure.Services;
-public sealed class CurrentUserService (
-    HttpContextAccessor httpContextAccessor
+internal sealed class CurrentUserService (
+    IHttpContextAccessor httpContextAccessor
     ) : ICurrentUserService
 {
     public Guid? UserId

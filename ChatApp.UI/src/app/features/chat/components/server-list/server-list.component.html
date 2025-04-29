@@ -1,0 +1,58 @@
+<!-- Servers -->
+<nav
+  class="h-full bg-neutral-200/70 dark:bg-neutral-800 dark:text-neutral-200 overflow-y-auto flex-col items-center hidden sm:flex"
+>
+  <!-- Logo -->
+  <div
+    class="w-full flex justify-center items-center border-b border-neutral-200 dark:border-neutral-700 h-[4rem]"
+  >
+    <img src="assets/Romaeterna_logo.png" alt="" class="size-12 object-contain" />
+  </div>
+  <!-- Server list -->
+  <div class="pt-2 flex flex-col justify-start items-center flex-1">
+    @for (server of servers; track $index) {
+    <div
+      title="{{ server.name }}"
+      class="my-2 size-10 border-transparent border hover:border-indigo-700 rounded-md overflow-hidden cursor-pointer"
+      (click)="setSelectedServer(server)"
+    >
+      @if(server.iconUrl){
+      <img
+        src="https://picsum.photos/400/600"
+        width="100"
+        height="100"
+        alt=""
+        class="size-10 object-cover"
+      />
+      }@else {
+      <div
+        class="flex items-center justify-center bg-neutral-300 dark:bg-neutral-700 w-full h-full"
+      >
+        <span class="text-3xl">{{ server.name[0] | uppercase }}</span>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  <div class="flex items-center justify-center pb-3 pt-2" title="Create Server">
+    <svg
+      class="size-10 cursor-pointer group"
+      matTooltip="Sunucu Oluştur"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      (click)="onOpen()"
+    >
+      <path
+        d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
+        class="stroke-2 stroke-indigo-600/80 dark:stroke-indigo-500/80 group-hover:stroke-indigo-600"
+        stroke-linecap="round"
+      />
+      <path
+        d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
+        class="stroke-2 stroke-indigo-600/80 dark:stroke-indigo-500/80 group-hover:stroke-indigo-600"
+        stroke-linecap="round"
+      />
+    </svg>
+  </div>
+</nav>

@@ -1,0 +1,132 @@
+<div class="z-10 fixed w-full h-full bg-neutral-900/50 backdrop-blur-lg"></div>
+<div class="fixed z-20 w-full h-full flex flex-col justify-center items-center">
+  <div
+    class="relative flex flex-col items-start justify-center rounded-md py-3 px-5 dark:bg-zinc-800 bg-neutral-100 shadow-xl min-w-[30dvw]"
+  >
+    <div class="absolute right-0 top-0">
+      <svg
+        class="size-7 cursor-pointer group"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        (click)="onClose()"
+      >
+        <path
+          d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5"
+          class="stroke-2 dark:stroke-neutral-600 stroke-neutral-400 group-hover:stroke-red-600/50"
+          stroke-linecap="round"
+        />
+      </svg>
+    </div>
+    <div class="my-5">
+      <span class="dark:text-neutral-400 text-neutral-600 text-2xl select-none"
+        >Create a new channel
+      </span>
+    </div>
+    <div class="flex flex-col justify-center items-start w-full">
+      <label for="server_name" class="dark:text-neutral-400 text-neutral-700 text-sm select-none"
+        >Channel name</label
+      >
+      <input
+        id="server_name"
+        type="text"
+        [(ngModel)]="request.name"
+        class="dark:bg-neutral-800 dark:text-neutral-300 w-full my-1 outline-none rounded-sm px-2 py-1.5 border-b border-neutral-700 focus:border-indigo-700"
+      />
+    </div>
+    <div class="flex flex-col justify-center items-start w-full my-3">
+      <label
+        for="server_description"
+        class="dark:text-neutral-400 text-neutral-700 text-sm select-none"
+        >Channel description</label
+      >
+      <textarea
+        id="server_description"
+        type="text"
+        [(ngModel)]="request.description"
+        class="dark:bg-neutral-800 dark:text-neutral-300 w-full my-1 outline-none rounded-sm px-2 py-1.5 border-b border-neutral-700 max-h-[5rem] min-h-[5rem] focus:border-indigo-700"
+      ></textarea>
+    </div>
+    <div class="mt-2">
+      <div class="flex items-center mb-4">
+        <input
+          id="default-checkbox"
+          type="checkbox"
+          value=""
+          checked
+          [(ngModel)]="isPublic"
+          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm dark:bg-gray-700"
+        />
+        <label
+          for="default-checkbox"
+          class="ms-2 text-sm font-medium dark:text-gray-300 text-neutral-700 select-none"
+          >Make this channel public</label
+        >
+      </div>
+    </div>
+
+    <div *ngIf="!isPublic" class="flex flex-col justify-center items-start w-full">
+      <label for="server_name" class="dark:text-neutral-400 text-neutral-700 text-sm select-none"
+        >Select roles to see this channel</label
+      >
+      <div class="my-2 flex flex-wrap max-w-[60dvw]">
+        @for (selectedRole of selectedRoles; track $index) {
+        <span
+          class="bg-neutral-700 rounded-md px-1 py-0.5 flex items-center text-sm mr-1 dark:text-neutral-300"
+          >{{ selectedRole }}
+          <svg
+            class="size-5 hover:fill-red-600 cursor-pointer mx-1"
+            viewBox="0 0 1024 1024"
+            fill="#000000"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            (click)="removeRole(selectedRole)"
+          >
+            <path
+              d="M512 897.6c-108 0-209.6-42.4-285.6-118.4-76-76-118.4-177.6-118.4-285.6 0-108 42.4-209.6 118.4-285.6 76-76 177.6-118.4 285.6-118.4 108 0 209.6 42.4 285.6 118.4 157.6 157.6 157.6 413.6 0 571.2-76 76-177.6 118.4-285.6 118.4z m0-760c-95.2 0-184.8 36.8-252 104-67.2 67.2-104 156.8-104 252s36.8 184.8 104 252c67.2 67.2 156.8 104 252 104 95.2 0 184.8-36.8 252-104 139.2-139.2 139.2-364.8 0-504-67.2-67.2-156.8-104-252-104z"
+              fill=""
+            />
+            <path d="M707.872 329.392L348.096 689.16l-31.68-31.68 359.776-359.768z" fill="" />
+            <path d="M328 340.8l32-31.2 348 348-32 32z" fill="" />
+          </svg>
+        </span>
+        }
+      </div>
+      <input
+        id="role_name"
+        type="text"
+        autocomplete="off"
+        #searchInput
+        (input)="filterRoles(searchInput.value)"
+        (focus)="isRoleListOpen = true"
+        (blur)="onBlur()"
+        class="dark:bg-neutral-800 dark:text-neutral-300 w-full my-1 outline-none rounded-sm px-2 py-1.5 border-b border-neutral-700 focus:border-indigo-700"
+      />
+    </div>
+    <div
+      *ngIf="!isPublic && isRoleListOpen && filteredRoles.length > 0"
+      class="relative flex flex-col justify-center items-start w-full bg-neutral-700"
+    >
+      <ul class="absolute bg-neutral-700 w-full z-20 top-0">
+        @for (role of filteredRoles; track $index) {
+        <li
+          class="px-2 py-1 dark:hover:bg-neutral-900 dark:text-neutral-300 cursor-pointer text-sm"
+          (mousedown)="selectRole(role)"
+        >
+          {{ role }}
+        </li>
+        }
+      </ul>
+    </div>
+
+    <div class="w-full my-3">
+      <button
+        type="submit"
+        class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-lg font-semibold"
+        (click)="createChannel()"
+      >
+        Create channel
+      </button>
+    </div>
+  </div>
+</div>

@@ -10,7 +10,7 @@ public sealed class Channel : Entity
     public ChannelType Type { get; set; }
     public Guid ServerId { get; set; }
     public Servers.Server? Server { get; set; }
-    public ICollection<Message> Messages { get;set; } = new List<Message>();
+    public ICollection<Message> Messages { get;set; } = new List<Message>(); 
 }
 
 public enum ChannelType

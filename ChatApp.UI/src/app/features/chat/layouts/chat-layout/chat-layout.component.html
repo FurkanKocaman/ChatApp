@@ -1,0 +1,28 @@
+<app-server-create-modal
+  *ngIf="isCreateServerModalOpen"
+  [isServerCreateModalOpen]="isCreateServerModalOpen"
+  (close)="closeCreateServerModal()"
+></app-server-create-modal>
+<app-channel-create-modal
+  *ngIf="isCreateChannelModalOpen"
+  [isCreateChannelModalOpen]="isCreateChannelModalOpen"
+  (close)="closeCreateChannelModal()"
+></app-channel-create-modal>
+<main
+  class="grid w-[100dvw] h-[100dvh] grid-cols-[0px_0px_1fr_0px] sm:grid-cols-[60px_200px_1fr_0px] md:grid-cols-[60px_200px_1fr_200px] lg:grid-cols-[60px_250px_1fr_300px]"
+>
+  <!-- Servers -->
+  <app-server-list
+    [isServerCreateModalOpen]="isCreateServerModalOpen"
+    (open)="openCreateServerModal()"
+  ></app-server-list>
+  <!-- Channels -->
+  <app-channel-list
+    [isCreateChannelModalOpen]="isCreateChannelModalOpen"
+    (open)="openCreateChannelModal()"
+  ></app-channel-list>
+  <!-- Chat -->
+  <app-chat-area></app-chat-area>
+  <!-- Members -->
+  <app-members-list [user]="user"></app-members-list>
+</main>

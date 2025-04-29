@@ -10,13 +10,12 @@ export const routes: Routes = [
   {
     path: "chat",
     loadComponent: () =>
-      import("./layouts/chat-layout/chat-layout.component").then((m) => m.ChatLayoutComponent),
+      import("./features/chat/layouts/chat-layout/chat-layout.component").then(
+        (m) => m.ChatLayoutComponent
+      ),
     canActivate: [authGuard],
   },
-  {
-    path: "profile",
-    loadChildren: () => import("./features/profile/profile.route").then((m) => m.PROFILE_ROUTES),
-  },
+
   // { path: '', component: ChatPageComponent, canActivate: [authGuard] },
   // {
   //   path: 'chat',

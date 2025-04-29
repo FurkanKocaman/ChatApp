@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
-import { LoginRequest } from "../../../core/models/login-req.model";
+import { LoginRequest } from "../../../core/models/requests/login-request.model";
 import { AuthService } from "../../../core/services/auth.service";
 import { ThemeService } from "../../../core/services/theme.service";
 
@@ -27,7 +27,8 @@ export class LoginComponent {
     this.isLoading = true;
     this.authService.login(this.loginReq).subscribe({
       next: (res) => {
-        this.authService.getUserData();
+        console.log(res);
+        // this.authService.getUserData();
         this.isLoading = false;
       },
       error: (err) => {

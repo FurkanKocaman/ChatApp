@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { RegisterRequest } from "../../../core/models/register-req.model";
-import { CommonModule } from "@angular/common";
+import { RegisterRequest } from "../../../core/models/requests/register-request.model";
 import { FormsModule } from "@angular/forms";
 import { ThemeService } from "../../../core/services/theme.service";
 
@@ -15,11 +14,13 @@ import { ThemeService } from "../../../core/services/theme.service";
 export class RegisterComponent {
   constructor(private themeService: ThemeService) {}
   registerReq: RegisterRequest = {
-    firstname: "",
-    lastname: "",
-    username: "",
+    firstName: "",
+    lastName: "",
+    userName: "",
     email: "",
     password: "",
+    birthOfDate: new Date(),
+    gender: undefined,
   };
 
   isDark: boolean = this.themeService.isDarkMode();

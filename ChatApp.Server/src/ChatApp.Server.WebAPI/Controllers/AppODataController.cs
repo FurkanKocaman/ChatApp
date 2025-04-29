@@ -1,5 +1,9 @@
-﻿using ChatApp.Server.Application.Users;
+﻿using ChatApp.Server.Application.Messages;
+using ChatApp.Server.Application.ServerMembers;
+using ChatApp.Server.Application.Servers;
+using ChatApp.Server.Application.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -19,6 +23,11 @@ public class AppODataController(
     {
         ODataConventionModelBuilder builder = new();
         builder.EnableLowerCamelCase();
+
+        builder.EntitySet<GetUserJoinedServersQueryResponse>("user-servers");
+        builder.EntitySet<MessagesGetAllQueryResponse>("messages");
+        builder.EntitySet<ServerMembersGetAllQueryResponse>("server-members");
+
         return builder.GetEdmModel();
     }
 
@@ -26,6 +35,38 @@ public class AppODataController(
     public async Task<IQueryable<UserGetAllQueryResponse>> GetUsers(CancellationToken cancellationToken)
     {
         var response = await sender.Send(new UserGetAllQuery(), cancellationToken);
+        return response;
+    }
+
+    [HttpGet("user-current")]
+    [Authorize()]
+    public async Task<UserGetCurrentQueryResponse> GetCurrentUser(CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new UserGetCurrentQuery(), cancellationToken);
+        return response;
+    }
+
+    [HttpGet("user-servers")]
+    [Authorize()]
+    public async Task<IQueryable<GetUserJoinedServersQueryResponse>> GetUserJoinedServers(CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new GetUserJoinedServersQuery(), cancellationToken);
+        return response;
+    }
+
+    [HttpGet("messages/{channelId}")]
+    [Authorize()]
+    public async Task<IQueryable<MessagesGetAllQueryResponse>> GetMessages(Guid channelId, CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new MessagesGetAllQuery(channelId), cancellationToken); 
+        return response;
+    }
+
+    [HttpGet("server-members/{serverId}")]
+    [Authorize()]
+    public async Task<IQueryable<ServerMembersGetAllQueryResponse>> GetServerMembers(Guid serverId, CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new ServerMembersGetAllQuery(serverId), cancellationToken);
         return response;
     }
 }

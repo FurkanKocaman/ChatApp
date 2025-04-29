@@ -1,46 +1,40 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  catchError,
-  debounceTime,
-  map,
-  Observable,
-  of,
-} from 'rxjs';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, catchError, debounceTime, map, Observable, of, tap } from "rxjs";
 
-import { environment } from '../../../environments/environment';
-import { Channel } from '../models/channel.model';
-import { User } from '../models/user.model';
+import { environment } from "../../../environments/environment";
+import { Channel } from "../models/channel.model";
+import { UserResponse } from "../models/responses";
+import { mapUserResponse, User } from "../models/entities/user.model";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UserService {
-  private usersInCurrentChannelSubject = new BehaviorSubject<
-    User[] | undefined
-  >(undefined);
-  public usersInCurrentChannel$ =
-    this.usersInCurrentChannelSubject.asObservable();
+  private userSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userSubject.asObservable();
 
   constructor(private httpClient: HttpClient) {}
-  getUserChannels(): Observable<Channel[]> {
-    return this.httpClient.get<Channel[]>(
-      `${environment.apiUrl}/User/GetUserChannels`
+
+  getCurrentUserSnapshot(): User | null {
+    return this.userSubject.value;
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.httpClient.get<UserResponse>(`${environment.apiUrl}odata/user-current`).pipe(
+      map((response) => mapUserResponse(response)),
+      tap((user) => {
+        this.userSubject.next(user);
+      })
     );
+  }
+
+  getUserChannels(): Observable<Channel[]> {
+    return this.httpClient.get<Channel[]>(`${environment.apiUrl}/User/GetUserChannels`);
   }
 
   getOwnedChannels(): Observable<Channel[]> {
-    return this.httpClient.get<Channel[]>(
-      `${environment.apiUrl}/User/GetOwnedChannels`
-    );
-  }
-
-  setCurrentChannelUsers(users: User[]): void {
-    this.usersInCurrentChannelSubject.next(users);
-  }
-  getCurrentChannelUsers(): User[] | undefined {
-    return this.usersInCurrentChannelSubject.value;
+    return this.httpClient.get<Channel[]>(`${environment.apiUrl}/User/GetOwnedChannels`);
   }
 
   getUserByUsername(username: string): Observable<User | undefined> {
@@ -49,17 +43,11 @@ export class UserService {
     );
   }
   getUsersById(usersId: string[]): Observable<User[]> {
-    return this.httpClient.post<User[]>(
-      `${environment.apiUrl}/User/GetUserById`,
-      usersId
-    );
+    return this.httpClient.post<User[]>(`${environment.apiUrl}/User/GetUserById`, usersId);
   }
 
   uploadUser(user: User): Observable<User> {
-    return this.httpClient.post<User>(
-      `${environment.apiUrl}/User/UpdateUser`,
-      user
-    );
+    return this.httpClient.post<User>(`${environment.apiUrl}/User/UpdateUser`, user);
   }
 
   checkUsername(username: string): Observable<boolean> {
@@ -80,11 +68,12 @@ export class UserService {
 
   uploadProfilePicture(file: File, userId: string): Observable<User> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    return this.httpClient.post<User>(
-      `${environment.apiUrl}/User/UploadProfileImage`,
-      formData
-    );
+    return this.httpClient.post<User>(`${environment.apiUrl}/User/UploadProfileImage`, formData);
+  }
+
+  logout() {
+    this.userSubject.next(null);
   }
 }

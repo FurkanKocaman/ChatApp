@@ -138,6 +138,9 @@ internal sealed class ApplicationDbContext: IdentityDbContext<AppUser, AppRole, 
             .WithMany(p => p.ServerMemberRoles)
             .HasForeignKey(p => p.ServerMemberId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<ServerMemberRole>()
+            .HasKey(p => new { p.ServerMemberId, p.AppRoleId });
     }
 
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

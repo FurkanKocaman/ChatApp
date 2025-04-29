@@ -1,7 +1,9 @@
-﻿using ChatApp.Server.Domain.Roles;
+﻿using ChatApp.Server.Application.Services;
+using ChatApp.Server.Domain.Roles;
 using ChatApp.Server.Domain.Users;
 using ChatApp.Server.Infrastructure.Context;
 using ChatApp.Server.Infrastructure.Options;
+using ChatApp.Server.Infrastructure.SignalR;
 using GenericRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +25,9 @@ public static class InfrastructureRegistrar
         });
 
         services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<ApplicationDbContext>());
+
+        services.AddScoped<IChatHubService, ChatHubService>();
+
 
         services
             .AddIdentity<AppUser, AppRole>(opt =>

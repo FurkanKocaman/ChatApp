@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.AspNetCore.RateLimiting;
 using Scalar.AspNetCore;
 using System.Threading.RateLimiting;
+using ChatApp.Server.Infrastructure.SignalR;
+using Microsoft.AspNetCore.Authentication;
+using PersonelYonetim.Server.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,8 @@ builder.Services.AddResponseCompression(opt =>
 {
     opt.EnableForHttps = true;
 });
+
+builder.Services.AddSignalR();
 
 builder.AddServiceDefaults();
 builder.Services.AddApplication();
@@ -41,6 +46,7 @@ x.AddFixedWindowLimiter("fixed",cfg =>
 }));
 
 builder.Services.AddExceptionHandler<ExceptionHandler>().AddProblemDetails();
+builder.Services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
 
 var app = builder.Build();
 
@@ -65,5 +71,7 @@ app.UseExceptionHandler();
 app.MapControllers().RequireRateLimiting("fixed").RequireAuthorization();
 
 ExtensionsMiddleware.CreateFirstUser(app);
+
+app.MapHub<ChatHub>("/chat-hub");
 
 app.Run();

@@ -372,9 +372,6 @@ namespace ChatApp.Server.Infrastructure.Migrations
                     b.Property<Guid>("ServerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ServerMemberId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset?>("UpdateAt")
                         .HasColumnType("datetimeoffset");
 
@@ -385,9 +382,22 @@ namespace ChatApp.Server.Infrastructure.Migrations
 
                     b.HasIndex("ServerId");
 
-                    b.HasIndex("ServerMemberId");
-
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("ChatApp.Server.Domain.ServerMemberRoles.ServerMemberRole", b =>
+                {
+                    b.Property<Guid>("ServerMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AppRoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ServerMemberId", "AppRoleId");
+
+                    b.HasIndex("AppRoleId");
+
+                    b.ToTable("ServerMemberRoles");
                 });
 
             modelBuilder.Entity("ChatApp.Server.Domain.ServerMembers.ServerMember", b =>
@@ -753,11 +763,26 @@ namespace ChatApp.Server.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("ChatApp.Server.Domain.ServerMembers.ServerMember", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("ServerMemberId");
-
                     b.Navigation("Server");
+                });
+
+            modelBuilder.Entity("ChatApp.Server.Domain.ServerMemberRoles.ServerMemberRole", b =>
+                {
+                    b.HasOne("ChatApp.Server.Domain.Roles.AppRole", "AppRole")
+                        .WithMany("ServerMemberRoles")
+                        .HasForeignKey("AppRoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ChatApp.Server.Domain.ServerMembers.ServerMember", "ServerMember")
+                        .WithMany("ServerMemberRoles")
+                        .HasForeignKey("ServerMemberId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AppRole");
+
+                    b.Navigation("ServerMember");
                 });
 
             modelBuilder.Entity("ChatApp.Server.Domain.ServerMembers.ServerMember", b =>
@@ -827,9 +852,14 @@ namespace ChatApp.Server.Infrastructure.Migrations
                     b.Navigation("Participants");
                 });
 
+            modelBuilder.Entity("ChatApp.Server.Domain.Roles.AppRole", b =>
+                {
+                    b.Navigation("ServerMemberRoles");
+                });
+
             modelBuilder.Entity("ChatApp.Server.Domain.ServerMembers.ServerMember", b =>
                 {
-                    b.Navigation("Roles");
+                    b.Navigation("ServerMemberRoles");
                 });
 
             modelBuilder.Entity("ChatApp.Server.Domain.Servers.Server", b =>

@@ -1,70 +1,54 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
-import { BehaviorSubject, Observable, map, throwError } from 'rxjs';
-import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
-import { LoginRequest } from '../models/login-req.model';
-import { User } from '../models/user.model';
-import { LoginResponse } from '../models/login-res.model';
-import { RegisterRequest } from '../models/register-req.model';
+import { Observable, map, throwError } from "rxjs";
+import { Router } from "@angular/router";
+import { LoginResponse } from "../models/login-res.model";
+import { LoginRequest, RegisterRequest } from "../models/requests";
+import { environment } from "../../../environments/environment.development";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<User | any>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
-
   private router: Router = new Router();
   constructor(private httpClient: HttpClient) {}
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
+    console.log("Credentials", credentials);
     return this.httpClient
-      .post<LoginResponse>(environment.apiUrl + '/Auth/Login', credentials)
+      .post<{
+        data: LoginResponse;
+        errorMessages: string[];
+        isSuccessful: boolean;
+        statusCode: number;
+      }>(environment.apiUrl + "auth/login", credentials)
       .pipe(
         map((response) => {
-          localStorage.setItem('access_token', response.accessToken);
-          localStorage.setItem('refresh_token', response.refreshToken);
-          return response;
+          localStorage.setItem("access_token", response.data.accessToken);
+          localStorage.setItem("refresh_token", response.data.refreshToken);
+          this.router.navigate(["/chat"]);
+          return response.data;
         })
       );
   }
 
-  getUserData() {
-    return this.httpClient
-      .get(`${environment.apiUrl}/Auth/GetUserByToken`)
-      .subscribe({
-        next: (res) => {
-          this.currentUserSubject.next(res);
-          this.router.navigate(['/chat']);
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
-  }
-
-  getCurrentUser(): User {
-    return this.currentUserSubject.value;
-  }
-
   register(credentials: RegisterRequest): Observable<LoginResponse> {
     return this.httpClient
-      .post<LoginResponse>(environment.apiUrl + '/Auth/Register', credentials)
+      .post<LoginResponse>(environment.apiUrl + "/auth/register", credentials)
       .pipe(
         map((response) => {
-          this.router.navigate(['/chat']);
+          this.router.navigate(["/chat"]);
           return response;
         })
       );
   }
 
   refreshToken(): Observable<LoginResponse> {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = localStorage.getItem("refreshToken");
 
     if (!refreshToken) {
-      return throwError(() => new Error('Refresh token not found!'));
+      return throwError(() => new Error("Refresh token not found!"));
     }
 
     return this.httpClient
@@ -72,13 +56,13 @@ export class AuthService {
         `${environment.apiUrl}/Auth/RefreshToken`,
         { refreshToken }, // JSON formatında gönderiyoruz
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         }
       )
       .pipe(
         map((response) => {
-          localStorage.setItem('accessToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
+          localStorage.setItem("accessToken", response.accessToken);
+          localStorage.setItem("refreshToken", response.refreshToken);
           return response;
         })
       );
@@ -99,12 +83,12 @@ export class AuthService {
   // }
 
   logout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    this.router.navigate(['login']);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    this.router.navigate(["login"]);
   }
 
   isLoggedIn(): boolean {
-    return localStorage.getItem('accessToken') !== null;
+    return localStorage.getItem("accessToken") !== null;
   }
 }
