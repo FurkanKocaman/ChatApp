@@ -5,6 +5,8 @@ using ChatApp.Server.Domain.ServerMembers;
 using ChatApp.Server.Domain.Servers;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using PersonelYonetim.Server.Domain.RoleClaim;
 using PersonelYonetim.Server.Domain.UnitOfWork;
 using TS.Result;
 
@@ -52,26 +54,36 @@ internal sealed class ServerCreateCommandHandler(
                 {
                     Name = "Admin",
                     ServerId = server.Id,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTimeOffset.Now,
                     CreateUserId = userId.Value,
+                    Level=1,
                 };
 
                 AppRole userRole = new()
                 {
                     Name = "User",
                     ServerId = server.Id,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTimeOffset.Now,
                     CreateUserId = userId.Value,
+                    Level = 10,
                 };
 
                 await roleManager.CreateAsync(adminRole);
                 await roleManager.CreateAsync(userRole);
 
+                foreach (var permission in typeof(Permissions).GetFields().Select(f => f.GetValue(null)?.ToString()))
+                {
+                    if (permission is not null)
+                    {
+                        await roleManager.AddClaimAsync(adminRole, new System.Security.Claims.Claim("permission",permission));
+                    }
+                }
+
                 ServerMember member = new()
                 {
                     ServerId = server.Id,
                     UserId = userId.Value,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTimeOffset.Now,
                     CreateUserId = userId.Value,
                 };
 
@@ -83,7 +95,6 @@ internal sealed class ServerCreateCommandHandler(
                 {
                     ServerMemberId = member.Id,
                     AppRoleId = adminRole.Id,
-
                 };
 
                 serverMemberRoleRepository.Add(serverMemberRole);

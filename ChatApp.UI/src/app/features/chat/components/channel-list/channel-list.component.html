@@ -177,7 +177,13 @@
         </div>
 
         <div class="group select-none">
-          <svg class="size-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg ">
+          <svg
+            class="size-5"
+            (click)="channelSettingsClick($event, channel)"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg "
+          >
             <circle
               cx="12"
               cy="12"

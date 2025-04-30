@@ -1,0 +1,76 @@
+<div class="z-10 fixed w-full h-full bg-neutral-900/50 backdrop-blur-lg"></div>
+<div class="fixed z-20 w-full h-full flex flex-col justify-center items-center">
+  <div
+    class="relative flex flex-col items-start justify-center rounded-md py-3 px-5 dark:bg-zinc-800 bg-neutral-100 shadow-xl min-w-[30dvw]"
+  >
+    <div class="absolute right-0 top-0">
+      <svg
+        class="size-7 cursor-pointer group"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        (click)="onClose()"
+      >
+        <path
+          d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5"
+          class="stroke-2 dark:stroke-neutral-600 stroke-neutral-400 group-hover:stroke-red-600/50"
+          stroke-linecap="round"
+        />
+      </svg>
+    </div>
+    <div class="my-5">
+      <span class="dark:text-neutral-400 text-neutral-600 text-xl select-none"
+        >Create An Invitation Link</span
+      >
+    </div>
+    @if(token == ""){
+    <div class="flex flex-col justify-center items-start w-full my-5">
+      <label for="server_name" class="dark:text-neutral-400 text-neutral-700 text-sm select-none"
+        >Enter the number of users who can join with this link</label
+      >
+      <input
+        id="server_name"
+        type="number"
+        min="1"
+        [(ngModel)]="request.count"
+        max="10"
+        autocomplete="off"
+        class="dark:bg-neutral-800 dark:text-neutral-300 w-full my-1 outline-none rounded-sm px-2 py-1.5 border-b border-neutral-700 focus:border-indigo-700"
+      />
+    </div>
+
+    <div class="w-full my-3">
+      <button
+        type="submit"
+        class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-lg font-semibold"
+        (click)="generateLink()"
+      >
+        Generate Link
+      </button>
+    </div>
+    }@else {
+    <div class="flex flex-col justify-center items-start w-full my-5">
+      <label for="server_name" class="dark:text-neutral-400 text-neutral-700 text-sm select-none"
+        >Invitation link</label
+      >
+      <input
+        id="server_name"
+        type="text"
+        [(ngModel)]="token"
+        autocomplete="off"
+        class="dark:bg-neutral-800 dark:text-neutral-300 w-full my-1 outline-none rounded-sm px-2 py-1.5 border-b border-neutral-700 focus:border-indigo-700"
+        disabled
+      />
+    </div>
+    <div class="w-full my-3">
+      <button
+        type="submit"
+        class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-lg font-semibold"
+        (click)="copyToClipboard()"
+      >
+        Copy To Clipboard
+      </button>
+    </div>
+    }
+  </div>
+</div>

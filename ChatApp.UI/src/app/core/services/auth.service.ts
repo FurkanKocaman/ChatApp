@@ -1,16 +1,20 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
-import { Observable, map, throwError } from "rxjs";
+import { BehaviorSubject, Observable, map, throwError } from "rxjs";
 import { Router } from "@angular/router";
 import { LoginResponse } from "../models/login-res.model";
 import { LoginRequest, RegisterRequest } from "../models/requests";
 import { environment } from "../../../environments/environment.development";
+import { Permission } from "../models/permissions";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
+  private permissionsSubject = new BehaviorSubject<Permission[] | null>(null);
+  permissions$ = this.permissionsSubject.asObservable();
+
   private router: Router = new Router();
   constructor(private httpClient: HttpClient) {}
 
@@ -35,13 +39,29 @@ export class AuthService {
 
   register(credentials: RegisterRequest): Observable<LoginResponse> {
     return this.httpClient
-      .post<LoginResponse>(environment.apiUrl + "/auth/register", credentials)
+      .post<LoginResponse>(environment.apiUrl + "auth/register", credentials)
       .pipe(
         map((response) => {
           this.router.navigate(["/chat"]);
           return response;
         })
       );
+  }
+
+  getPermissions(serverId: string): Observable<Permission[]> {
+    return this.httpClient
+      .get<{
+        data: Permission[];
+        errorMessages: string[];
+        isSuccessful: boolean;
+        statusCode: number;
+      }>(`${environment.apiUrl}auth/permissions?serverId=${serverId}`)
+      .pipe(map((p) => p.data));
+  }
+
+  setPermissionsSubject(permissions: Permission[]) {
+    console.log(permissions);
+    this.permissionsSubject.next(permissions);
   }
 
   refreshToken(): Observable<LoginResponse> {

@@ -8,6 +8,12 @@
   [isCreateChannelModalOpen]="isCreateChannelModalOpen"
   (close)="closeCreateChannelModal()"
 ></app-channel-create-modal>
+<app-invite-member-modal
+  *ngIf="isInviteMemberModalOpen"
+  [isInviteMemberModalOpen]="isInviteMemberModalOpen"
+  (close)="closeInviteMemberModal()"
+>
+</app-invite-member-modal>
 <main
   class="grid w-[100dvw] h-[100dvh] grid-cols-[0px_0px_1fr_0px] sm:grid-cols-[60px_200px_1fr_0px] md:grid-cols-[60px_200px_1fr_200px] lg:grid-cols-[60px_250px_1fr_300px]"
 >
@@ -24,5 +30,9 @@
   <!-- Chat -->
   <app-chat-area></app-chat-area>
   <!-- Members -->
-  <app-members-list [user]="user"></app-members-list>
+  <app-members-list
+    [user]="user"
+    [isInviteMemberModalOpen]="isInviteMemberModalOpen"
+    (open)="openInviteMemberModal()"
+  ></app-members-list>
 </main>

@@ -48,6 +48,17 @@ x.AddFixedWindowLimiter("fixed",cfg =>
 builder.Services.AddExceptionHandler<ExceptionHandler>().AddProblemDetails();
 builder.Services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
 
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("CreateChannel", policy =>
+//        policy.Requirements.Add(new PermissionRequirement("CreateChannel")));
+
+//    options.AddPolicy("ViewChannels", policy =>
+//        policy.Requirements.Add(new PermissionRequirement("ViewChannels")));
+//});
+
+//builder.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
+
 var app = builder.Build();
 
 app.MapOpenApi();
@@ -73,5 +84,6 @@ app.MapControllers().RequireRateLimiting("fixed").RequireAuthorization();
 ExtensionsMiddleware.CreateFirstUser(app);
 
 app.MapHub<ChatHub>("/chat-hub");
+app.MapHealthChecks("/health/redis");
 
 app.Run();

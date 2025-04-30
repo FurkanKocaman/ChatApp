@@ -3,6 +3,7 @@ using ChatApp.Server.Domain.Roles;
 using ChatApp.Server.Domain.Users;
 using ChatApp.Server.Infrastructure.Context;
 using ChatApp.Server.Infrastructure.Options;
+using ChatApp.Server.Infrastructure.Services;
 using ChatApp.Server.Infrastructure.SignalR;
 using GenericRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,7 +11,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using PersonelYonetim.Server.Domain.RoleClaim;
 using Scrutor;
+using StackExchange.Redis;
 
 namespace ChatApp.Server.Infrastructure;
 
@@ -27,7 +31,22 @@ public static class InfrastructureRegistrar
         services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<ApplicationDbContext>());
 
         services.AddScoped<IChatHubService, ChatHubService>();
+        services.AddScoped<IPermissionCacheService,  PermissionCacheService>();
 
+        services.AddSingleton<IConnectionMultiplexer>(_ =>
+            ConnectionMultiplexer.Connect(configuration["Redis:ConnectionString"]!));
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration["Redis:ConnectionString"];
+            options.InstanceName = "ChatApp_";
+        });
+
+        services.AddHealthChecks()
+         .AddCheck<RedisHealthCheck>(
+             name: "redis",
+             failureStatus: HealthStatus.Unhealthy,
+             tags: new[] { "database" });
 
         services
             .AddIdentity<AppUser, AppRole>(opt =>
@@ -52,7 +71,18 @@ public static class InfrastructureRegistrar
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer();
-        services.AddAuthorization();
+
+        services.AddAuthorization(options =>
+        {
+            foreach (var permission in typeof(Permissions).GetFields().Select(f => f.GetValue(null)?.ToString()))
+            {
+                if (permission is not null)
+                {
+                    options.AddPolicy(permission, policy =>
+                        policy.RequireClaim("permission", permission));
+                }
+            }
+        });
 
         services.Scan(opt => opt
         .FromAssemblies(typeof(InfrastructureRegistrar).Assembly)

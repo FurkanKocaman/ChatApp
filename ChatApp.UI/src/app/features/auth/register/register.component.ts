@@ -3,6 +3,7 @@ import { RouterLink } from "@angular/router";
 import { RegisterRequest } from "../../../core/models/requests/register-request.model";
 import { FormsModule } from "@angular/forms";
 import { ThemeService } from "../../../core/services/theme.service";
+import { AuthService } from "../../../core/services/auth.service";
 
 @Component({
   selector: "app-register",
@@ -12,7 +13,7 @@ import { ThemeService } from "../../../core/services/theme.service";
   styleUrl: "./register.component.css",
 })
 export class RegisterComponent {
-  constructor(private themeService: ThemeService) {}
+  constructor(private themeService: ThemeService, private authService: AuthService) {}
   registerReq: RegisterRequest = {
     firstName: "",
     lastName: "",
@@ -25,7 +26,11 @@ export class RegisterComponent {
 
   isDark: boolean = this.themeService.isDarkMode();
 
-  register(): void {}
+  register(): void {
+    this.authService.register(this.registerReq).subscribe((res) => {
+      console.log(res);
+    });
+  }
 
   toggleTheme(): void {
     this.themeService.toggleTheme();

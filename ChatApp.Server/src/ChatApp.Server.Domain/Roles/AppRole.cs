@@ -7,6 +7,7 @@ public sealed class AppRole:IdentityRole<Guid>
 {
     public Guid ServerId { get; set; } = default!;
     public Servers.Server? Server { get; set; }
+    public decimal Level { get; set; }
     public string? ColorHex { get; set; }
     public ICollection<ServerMemberRole> ServerMemberRoles { get; set; } = new List<ServerMemberRole>();
     #region Audit Log

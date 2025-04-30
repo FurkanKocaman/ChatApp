@@ -9,5 +9,7 @@ public static class RouteRegistrar
         app.RegisterServerRoutes();
         app.RegisterChannelRoutes();
         app.RegisterMessageRoutes();
+        app.RegisterTokenRoutes();
+        app.RegisterServerMemberRoutes();
     }
 }

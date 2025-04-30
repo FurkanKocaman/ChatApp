@@ -14,16 +14,10 @@ internal sealed class JwtProvider(
 {
     public Task<string> CreateTokenAsync(AppUser user, CancellationToken cancellationToken = default)
     {
-        //var roles = userManager.GetRolesAsync(user).Result;
         List<Claim> claims = new()
         {
             new Claim(ClaimTypes.NameIdentifier,user.Id.ToString())
         };
-        //foreach (var role in roles)
-        //{
-        //    claims.Add(new Claim(ClaimTypes.Role, role));
-        //}
-
         var expires = DateTime.Now.AddDays(1);
 
         SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(options.Value.SecretKey));

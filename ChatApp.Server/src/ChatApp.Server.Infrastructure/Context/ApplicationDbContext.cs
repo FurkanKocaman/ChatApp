@@ -8,6 +8,7 @@ using ChatApp.Server.Domain.Messages;
 using ChatApp.Server.Domain.Roles;
 using ChatApp.Server.Domain.ServerMemberRoles;
 using ChatApp.Server.Domain.ServerMembers;
+using ChatApp.Server.Domain.Tokens;
 using ChatApp.Server.Domain.UserRoles;
 using ChatApp.Server.Domain.Users;
 using GenericRepository;
@@ -34,15 +35,31 @@ internal sealed class ApplicationDbContext: IdentityDbContext<AppUser, AppRole, 
     public DbSet<ConversationParticipant> ConversationParticipants { get; set; } = default!;
     public DbSet<DirectMessage> DirectMessages { get; set; } = default!;
     public DbSet<ServerMemberRole> ServerMemberRoles { get; set; } = default!;
+    public DbSet<Token> Tokens { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.Ignore<IdentityUserRole<Guid>>();
         modelBuilder.Ignore<IdentityUserClaim<Guid>>();
         modelBuilder.Ignore<IdentityUserLogin<Guid>>();
         modelBuilder.Ignore<IdentityUserToken<Guid>>();
         modelBuilder.Ignore<IdentityUserRole<Guid>>();
-        
+
+        modelBuilder.Entity<Token>()
+            .HasOne(p => p.Server)
+            .WithMany()
+            .HasForeignKey(p => p.ServerId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Token>()
+            .HasOne(p => p.Creator)
+            .WithMany()
+            .HasForeignKey(p => p.CreatorId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<AppRole>()
+            .Property(p => p.Level).HasColumnType("decimal(18,2)");        
         modelBuilder.Entity<Channel>()
             .HasOne(p => p.Server)
             .WithMany(p => p.Channels)

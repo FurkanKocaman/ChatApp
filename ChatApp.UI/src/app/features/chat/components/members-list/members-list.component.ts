@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ServerMember, User } from "../../../../core/models/entities";
 import { ServerService } from "../../../../core/services/server.service";
 
@@ -12,6 +12,9 @@ import { ServerService } from "../../../../core/services/server.service";
 })
 export class MembersListComponent implements OnInit {
   @Input() user: User | null = null;
+
+  @Input() isInviteMemberModalOpen: boolean = false;
+  @Output() open = new EventEmitter<void>();
 
   isMicrophoneOpen: boolean = false;
   isHeadsetOpen: boolean = false;
@@ -30,6 +33,10 @@ export class MembersListComponent implements OnInit {
         });
       }
     });
+  }
+
+  onOpen() {
+    this.open.emit();
   }
 
   toggleMicrophone(): void {

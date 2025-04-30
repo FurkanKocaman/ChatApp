@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
+using PersonelYonetim.Server.Domain.RoleClaim;
 
 namespace ChatApp.Server.WebAPI.Controllers;
 
@@ -48,6 +49,7 @@ public class AppODataController(
 
     [HttpGet("user-servers")]
     [Authorize()]
+    //[Authorize(Policy = Permissions.CreateChannel)]
     public async Task<IQueryable<GetUserJoinedServersQueryResponse>> GetUserJoinedServers(CancellationToken cancellationToken)
     {
         var response = await sender.Send(new GetUserJoinedServersQuery(), cancellationToken);

@@ -51,6 +51,11 @@ export class ChannelListComponent implements OnInit {
     this.joinChannel(channel.id);
   }
 
+  channelSettingsClick(event: MouseEvent, channel: Channel) {
+    event.stopPropagation();
+    console.log(channel.name);
+  }
+
   joinChannel(id: string) {
     if (this.selectedChannelId != "") this.leaveChannel(this.selectedChannelId);
     this.signalService.joinChannel(id);

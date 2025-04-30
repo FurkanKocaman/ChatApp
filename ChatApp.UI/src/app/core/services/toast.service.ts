@@ -1,23 +1,25 @@
-import { Injectable } from '@angular/core';
-import { ToastMessage } from '../models/toast-message';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import { Toast, ToastPosition, ToastType } from "../models/entities";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ToastService {
-  private toasts: ToastMessage[] = [];
-  private toastSubject = new BehaviorSubject<ToastMessage[]>([]);
+  private toasts: Toast[] = [];
+  private toastSubject = new BehaviorSubject<Toast[]>([]);
   toast$ = this.toastSubject.asObservable();
 
   showToast(
     message: string,
-    type: 'success' | 'error' | 'info' | 'warning',
-    duration: number = 5000
+    type: ToastType,
+    duration: number = 5000,
+    dismissible = true,
+    position: ToastPosition = "top-right"
   ) {
     const id = Date.now();
 
-    const newToast: ToastMessage = { id, message, type, duration };
+    const newToast: Toast = { id, message, type, duration, dismissible, position };
 
     this.toasts.push(newToast);
     this.toastSubject.next([...this.toasts]);

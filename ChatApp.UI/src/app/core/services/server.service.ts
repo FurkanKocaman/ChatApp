@@ -10,6 +10,7 @@ import {
   Server,
   ServerMember,
 } from "../models/entities";
+import { AuthService } from "./auth.service";
 
 @Injectable({
   providedIn: "root",
@@ -18,7 +19,7 @@ export class ServerService {
   private serverSubject = new BehaviorSubject<Server | null>(null);
   server$ = this.serverSubject.asObservable();
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private authService: AuthService) {}
 
   createServer(request: ServerCreateRequest): Observable<string> {
     return this.httpClient
@@ -42,8 +43,12 @@ export class ServerService {
       .pipe(map((response) => mapServerResponse(response.value)));
   }
 
-  setSelectedServer(server: Server) {
+  async setSelectedServer(server: Server) {
     this.serverSubject.next(server);
+
+    this.authService.getPermissions(server.id).subscribe((res) => {
+      this.authService.setPermissionsSubject(res);
+    });
   }
 
   getCurrentServerSnapshot(): Server | null {
@@ -56,5 +61,16 @@ export class ServerService {
         `${environment.apiUrl}odata/server-members/${id}`
       )
       .pipe(map((res) => mapServerMemberResponse(res.value)));
+  }
+
+  joinServerByToken(token: string): Observable<string> {
+    return this.httpClient
+      .post<{
+        data: string;
+        errorMessages: string[];
+        isSuccessful: boolean;
+        statusCode: number;
+      }>(`${environment.apiUrl}server-members/join-by-token`, { token: token })
+      .pipe(map((p) => p.data));
   }
 }

@@ -16,7 +16,7 @@ public static class ChannelModule
                 var response = await sender.Send(request, cancellationToken);
                 return response.IsSuccessful ? Results.Ok(response) : Results.InternalServerError(response);
             })
-            .Produces<Result<string>>();
+            .RequireAuthorization().Produces<Result<string>>();
 
 
         group.MapGet("/get",
@@ -25,6 +25,6 @@ public static class ChannelModule
                 var response = await sender.Send(request, cancellationToken);
                 return Results.Ok(response);
             })
-            .Produces<Result<string>>();
+            .RequireAuthorization().Produces<Result<string>>();
     }
 }

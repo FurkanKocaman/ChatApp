@@ -1,17 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { ToastMessage } from '../../../core/models/toast-message';
-import { ToastService } from '../../../core/services/toast.service';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from "@angular/core";
+import { ToastService } from "../../../core/services/toast.service";
+import { CommonModule } from "@angular/common";
+import { Toast } from "../../../core/models/entities";
 
 @Component({
-  selector: 'app-toast',
+  selector: "app-toast",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './toast.component.html',
-  styleUrl: './toast.component.css',
+  templateUrl: "./toast.component.html",
+  styleUrl: "./toast.component.css",
 })
 export class ToastComponent {
-  toasts: ToastMessage[] = [];
+  toasts: Toast[] = [];
 
   constructor(private toastService: ToastService) {
     this.toastService.toast$.subscribe((messages) => {

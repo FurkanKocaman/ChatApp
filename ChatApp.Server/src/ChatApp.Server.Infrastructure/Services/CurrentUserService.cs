@@ -19,5 +19,17 @@ internal sealed class CurrentUserService (
             return Guid.Parse(userIdString);
         }
     }
+    public Guid? ServerId
+    {
+        get
+        {
+            var serverId = httpContextAccessor.HttpContext?.Request.Headers["X-Current-Server"];
+            if (string.IsNullOrEmpty(serverId))
+            {
+                return null;
+            }
+            return Guid.Parse(serverId!);
+        }
+    }
 
 }

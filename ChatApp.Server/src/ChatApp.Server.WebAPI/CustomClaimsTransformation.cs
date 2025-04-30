@@ -1,38 +1,44 @@
-﻿using ChatApp.Server.Domain.Roles;
+﻿using ChatApp.Server.Application.Services;
+using ChatApp.Server.Domain.Roles;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
 namespace PersonelYonetim.Server.WebAPI;
 
-public class CustomClaimsTransformation(RoleManager<AppRole> roleManager) : IClaimsTransformation
+public class CustomClaimsTransformation(RoleManager<AppRole> roleManager, IHttpContextAccessor httpContextAccessor, IPermissionCacheService permissionCacheService) : IClaimsTransformation
 {
+    private static readonly MemoryCache _cache = new(new MemoryCacheOptions());
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
-        if (principal.HasClaim(claim => claim.Type == "permission"))
+        var serverId = httpContextAccessor.HttpContext?.Request.Headers["X-Current-Server"].FirstOrDefault();
+
+        if (string.IsNullOrWhiteSpace(serverId))
             return principal;
+
+        var userId = principal.FindFirst(ClaimTypes.NameIdentifier);
+
+        if(string.IsNullOrEmpty(userId.Value))
+            return principal;
+
+        var permissions = await permissionCacheService.GetPermissionsAsync(Guid.Parse(userId.Value), Guid.Parse(serverId));
 
         var identity = principal.Identity as ClaimsIdentity;
         if(identity == null)
             return principal;
-        var roleClaims = identity.Claims.Where(p => p.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-        if (!roleClaims.Any())
+
+        foreach (var claim in identity.FindAll("permission").ToList())
         {
-            return principal;
+            identity.RemoveClaim(claim);
         }
-        foreach (var roleClaim in roleClaims)
+
+        foreach (var permission in permissions)
         {
-            var role = await roleManager.FindByIdAsync(roleClaim);
-            if(role is not null)
-            {
-                var permissions = await roleManager.GetClaimsAsync(role);
-                foreach (var permission in permissions)
-                {
-                    if(!identity.HasClaim(permission.Type, permission.Value))
-                        identity.AddClaim(permission);
-                }
-            }
+            identity.AddClaim(new Claim("permission", permission));
         }
+
+        identity.AddClaim(new Claim("current_server", serverId.ToString()));
 
         return principal;
     }

@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { AlertService } from "./core/services/alert.service";
 import { SignalChatService } from "./core/services/signal-chat.service";
 import { AuthService } from "./core/services/auth.service";
 import { ToastComponent } from "./shared/components/toast/toast.component";
@@ -19,11 +18,7 @@ import { MatButtonModule } from "@angular/material/button";
 export class AppComponent implements OnInit, OnDestroy {
   title = "chat_app";
 
-  constructor(
-    private signalChatService: SignalChatService,
-    private authService: AuthService,
-    private themeService: ThemeService
-  ) {
+  constructor(private themeService: ThemeService) {
     this.themeService.loadTheme();
   }
   ngOnInit(): void {}

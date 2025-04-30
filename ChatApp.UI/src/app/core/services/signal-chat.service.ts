@@ -36,15 +36,10 @@ export class SignalChatService {
           .start()
           .then(() => {
             // this.hubConnection.invoke("Connect", this.userId).catch((err) => console.error(err));
-            console.log("signalR connection started.");
             this.currentSignalSubject.next(true);
-            this.hubConnection.on("UserConnected", (userId: string) => {
-              console.log(`User connected: ${userId}`);
-            });
+            this.hubConnection.on("UserConnected", (userId: string) => {});
 
-            this.hubConnection.on("UserDisconnected", (userId: string) => {
-              console.log(`User disconnected: ${userId}`);
-            });
+            this.hubConnection.on("UserDisconnected", (userId: string) => {});
           })
           .catch((err) => {
             console.error("Error while establishing connection", err);
@@ -80,7 +75,6 @@ export class SignalChatService {
   joinChannel(channelId: string) {
     this.userService.user$.subscribe({
       next: (res) => {
-        console.log("RES", res);
         this.hubConnection
           .invoke("JoinChannel", channelId)
           .catch((err) => console.error("JoinChannel error:", err));

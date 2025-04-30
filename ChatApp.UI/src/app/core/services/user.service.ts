@@ -20,12 +20,13 @@ export class UserService {
     return this.userSubject.value;
   }
 
-  getCurrentUser(): Observable<User> {
+  getCurrentUser(): Observable<User | null> {
     return this.httpClient.get<UserResponse>(`${environment.apiUrl}odata/user-current`).pipe(
       map((response) => mapUserResponse(response)),
       tap((user) => {
         this.userSubject.next(user);
-      })
+      }),
+      catchError(() => of(null))
     );
   }
 

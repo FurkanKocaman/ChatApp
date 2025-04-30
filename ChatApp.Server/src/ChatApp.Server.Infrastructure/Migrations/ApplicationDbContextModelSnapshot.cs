@@ -17,7 +17,7 @@ namespace ChatApp.Server.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.2")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -363,6 +363,9 @@ namespace ChatApp.Server.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("Level")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -496,6 +499,49 @@ namespace ChatApp.Server.Infrastructure.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Servers");
+                });
+
+            modelBuilder.Entity("ChatApp.Server.Domain.Tokens.Token", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreationDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CurrentUsageCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Data")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("ExpirationDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxUsageCount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TokenType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("ServerId");
+
+                    b.ToTable("Tokens");
                 });
 
             modelBuilder.Entity("ChatApp.Server.Domain.UserRoles.UserRole", b =>
@@ -813,6 +859,25 @@ namespace ChatApp.Server.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("ChatApp.Server.Domain.Tokens.Token", b =>
+                {
+                    b.HasOne("ChatApp.Server.Domain.Users.AppUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ChatApp.Server.Domain.Servers.Server", "Server")
+                        .WithMany()
+                        .HasForeignKey("ServerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Server");
                 });
 
             modelBuilder.Entity("ChatApp.Server.Domain.UserRoles.UserRole", b =>
