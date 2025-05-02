@@ -60,7 +60,6 @@ export class AuthService {
   }
 
   setPermissionsSubject(permissions: Permission[]) {
-    console.log(permissions);
     this.permissionsSubject.next(permissions);
   }
 

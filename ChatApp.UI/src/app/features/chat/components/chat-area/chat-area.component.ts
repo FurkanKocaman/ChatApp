@@ -1,11 +1,17 @@
 import {
   AfterContentChecked,
+  AfterViewChecked,
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
+  Input,
+  NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   ViewChild,
 } from "@angular/core";
 import { ThemeService } from "../../../../core/services/theme.service";
@@ -26,16 +32,23 @@ import { BehaviorSubject, fromEvent, Subscription } from "rxjs";
   templateUrl: "./chat-area.component.html",
   styleUrl: "./chat-area.component.css",
 })
-export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges {
+export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges, AfterViewChecked {
   @ViewChild("chatContainer") private chatContainer!: ElementRef;
+
+  @Output() open = new EventEmitter<void>();
 
   constructor(
     private themeService: ThemeService,
     private channelService: ChannelService,
     private messageService: MessageService,
-    private signalService: SignalChatService
+    private signalService: SignalChatService,
+    private zone: NgZone,
+    private cdRef: ChangeDetectorRef
   ) {}
+
   isDark: boolean = this.themeService.isDarkMode();
+
+  private scrollPending: boolean = false;
 
   isMicrophoneOpen: boolean = false;
   isHeadsetOpen: boolean = false;
@@ -55,6 +68,7 @@ export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges {
           this.request.channelId = res.id;
           this.messageService.getMessages(res!.id).subscribe((res) => {
             this.messages = res;
+            this.scrollToBottom();
           });
           this.signalService.receiveChannelMessage((message) => {
             this.messages.push(mapMessageResponse([message])[0]);
@@ -66,7 +80,18 @@ export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
-    this.scrollToBottom();
+    // const messageContainers = document.querySelectorAll(".message-container");
+    // messageContainers.forEach((el) => {
+    //   el.classList.add("notranslate");
+    //   el.setAttribute("translate", "no");
+    // });
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.scrollPending) {
+      this.scrollToBottom();
+      this.scrollPending = false;
+    }
   }
 
   ngOnChanges() {
@@ -74,10 +99,11 @@ export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   sendMessage() {
-    console.log(this.request);
     if (this.request.channelId) {
       this.messageService.sendMessage(this.request).subscribe((res) => {
         this.request.content = "";
+        this.scrollPending = true;
+        this.cdRef.detectChanges();
       });
     }
   }
@@ -107,7 +133,18 @@ export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges {
   }
   private scrollToBottom(): void {
     setTimeout(() => {
-      this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
-    }, 0);
+      this.zone.runOutsideAngular(() => {
+        try {
+          const element = this.chatContainer.nativeElement;
+          element.scrollTop = element.scrollHeight;
+        } catch (err) {
+          console.error("Scroll error:", err);
+        }
+      });
+    }, 10);
+  }
+
+  openSidebar() {
+    this.open.emit();
   }
 }

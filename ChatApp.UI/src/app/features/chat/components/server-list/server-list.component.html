@@ -1,6 +1,7 @@
 <!-- Servers -->
 <nav
-  class="h-full bg-neutral-200/70 dark:bg-neutral-800 dark:text-neutral-200 overflow-y-auto flex-col items-center hidden sm:flex"
+  class="h-full bg-neutral-200/70 dark:bg-neutral-800 dark:text-neutral-200 overflow-y-auto flex-col items-center sm:flex server-list"
+  [ngClass]="{ 'fixed sm:relative w-16 sm:w-full flex z-10': sidebarOpen,}"
 >
   <!-- Logo -->
   <div
@@ -26,7 +27,7 @@
       />
       }@else {
       <div
-        class="flex items-center justify-center bg-neutral-300 dark:bg-neutral-700 w-full h-full"
+        class="flex items-center justify-center bg-neutral-300 dark:bg-neutral-700 w-full h-full select-none"
       >
         <span class="text-3xl">{{ server.name[0] | uppercase }}</span>
       </div>

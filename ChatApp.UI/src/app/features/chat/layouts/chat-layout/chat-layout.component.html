@@ -21,14 +21,17 @@
   <app-server-list
     [isServerCreateModalOpen]="isCreateServerModalOpen"
     (open)="openCreateServerModal()"
+    [sidebarOpen]="isSidebarOpen"
   ></app-server-list>
   <!-- Channels -->
   <app-channel-list
     [isCreateChannelModalOpen]="isCreateChannelModalOpen"
     (open)="openCreateChannelModal()"
+    [sidebarOpen]="isSidebarOpen"
+    (closeSidebar)="closeSidebar()"
   ></app-channel-list>
   <!-- Chat -->
-  <app-chat-area></app-chat-area>
+  <app-chat-area (open)="openSidebar()"></app-chat-area>
   <!-- Members -->
   <app-members-list
     [user]="user"

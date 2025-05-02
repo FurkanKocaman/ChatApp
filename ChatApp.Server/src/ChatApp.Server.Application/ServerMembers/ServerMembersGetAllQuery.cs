@@ -16,6 +16,7 @@ public sealed class ServerMembersGetAllQueryResponse
     public string FullName { get; set; } = default!;
     public string? DisplayName { get; set; }
     public string? AvatarUrl { get; set; }
+    public List<string?> Roles { get; set; } = new List<string?>();
 }
 
 internal sealed class ServerMembersGetAllQueryHandler(
@@ -30,7 +31,7 @@ internal sealed class ServerMembersGetAllQueryHandler(
         if(!userId.HasValue)
             return Task.FromResult(Enumerable.Empty<ServerMembersGetAllQueryResponse>().AsQueryable());
 
-        var serverMembers = serverMemberRepository.Where(p => p.ServerId == request.serverId).Include(p => p.User);
+        var serverMembers = serverMemberRepository.Where(p => p.ServerId == request.serverId).Include(p => p.User).Include(p => p.ServerMemberRoles).ThenInclude(p => p.AppRole);
 
         var response = serverMembers
                 .Select(s => new ServerMembersGetAllQueryResponse
@@ -41,6 +42,7 @@ internal sealed class ServerMembersGetAllQueryHandler(
                     FullName = s.User!= null ? s.User.FullName : "null",
                     DisplayName = s.User != null ? s.User.DisplayName : null,
                     AvatarUrl = s.User != null ? s.User.AvatarUrl : null,
+                    Roles = s.ServerMemberRoles.Select(p => p.AppRole.Name).ToList()
                 }).AsQueryable();
 
         return Task.FromResult(response);

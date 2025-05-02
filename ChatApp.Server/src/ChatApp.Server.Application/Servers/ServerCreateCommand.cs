@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using PersonelYonetim.Server.Domain.RoleClaim;
 using PersonelYonetim.Server.Domain.UnitOfWork;
+using System.Data;
 using TS.Result;
 
 namespace ChatApp.Server.Application.Servers;
@@ -28,8 +29,8 @@ internal sealed class ServerCreateCommandHandler(
 {
     public async Task<Result<string>> Handle(ServerCreateCommand request, CancellationToken cancellationToken)
     {
-        using(var transaction = unitOfWork.BeginTransaction())
-        {
+        //using(var transaction = unitOfWork.BeginTransaction())
+        //{
             try
             {
                 Guid? userId = currentUserService.UserId;
@@ -50,25 +51,39 @@ internal sealed class ServerCreateCommandHandler(
                 serverRepository.Add(server);
                 await unitOfWork.SaveChangesAsync(cancellationToken);
 
+
                 AppRole adminRole = new()
                 {
                     Name = "Admin",
+                    NormalizedName = ("Admin").ToUpper(),
                     ServerId = server.Id,
                     CreatedAt = DateTimeOffset.Now,
                     CreateUserId = userId.Value,
-                    Level=1,
+                    Level=1m,
                 };
 
-                AppRole userRole = new()
+            AppRole moderatorRole = new()
+            {
+                Name = "Moderator",
+                NormalizedName = ("Moderator").ToUpper(),
+                ServerId = server.Id,
+                CreatedAt = DateTimeOffset.Now,
+                CreateUserId = userId.Value,
+                Level = 2m,
+            };
+
+            AppRole userRole = new()
                 {
                     Name = "User",
+                    NormalizedName = ("User").ToUpper(),
                     ServerId = server.Id,
                     CreatedAt = DateTimeOffset.Now,
                     CreateUserId = userId.Value,
-                    Level = 10,
+                    Level = 10m,
                 };
 
-                await roleManager.CreateAsync(adminRole);
+            await roleManager.CreateAsync(adminRole);
+                await roleManager.CreateAsync(moderatorRole);
                 await roleManager.CreateAsync(userRole);
 
                 foreach (var permission in typeof(Permissions).GetFields().Select(f => f.GetValue(null)?.ToString()))
@@ -100,16 +115,16 @@ internal sealed class ServerCreateCommandHandler(
                 serverMemberRoleRepository.Add(serverMemberRole);
 
                 await unitOfWork.SaveChangesAsync(cancellationToken);
-                await unitOfWork.CommitTransactionAsync(transaction);
+                //await unitOfWork.CommitTransactionAsync(transaction);
 
                 return Result<string>.Succeed("Sever created successfully");
             }
             catch (Exception ex)
             {
-                await unitOfWork.RollbackTransactionAsync(transaction);
+                //await unitOfWork.RollbackTransactionAsync(transaction);
                 return Result<string>.Failure("Error : " + ex.Message);
             }
-        }
+        //}
        
     }
 }

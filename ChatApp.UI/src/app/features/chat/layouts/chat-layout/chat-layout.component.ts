@@ -35,6 +35,8 @@ export class ChatLayoutComponent implements OnInit {
   isCreateChannelModalOpen: boolean = false;
   isInviteMemberModalOpen: boolean = false;
 
+  isSidebarOpen: boolean = false;
+
   constructor(private userService: UserService, private signalService: SignalChatService) {}
 
   ngOnInit(): void {
@@ -63,5 +65,14 @@ export class ChatLayoutComponent implements OnInit {
   }
   closeInviteMemberModal() {
     this.isInviteMemberModalOpen = false;
+  }
+
+  openSidebar() {
+    this.isSidebarOpen = true;
+  }
+
+  closeSidebar() {
+    this.isSidebarOpen = false;
+    console.log(this.isSidebarOpen);
   }
 }

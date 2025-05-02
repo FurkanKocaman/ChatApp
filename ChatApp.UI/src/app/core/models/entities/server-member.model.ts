@@ -8,6 +8,7 @@ export interface ServerMember extends EntityDto {
   fullName: string;
   displayName?: string;
   avatarUrl?: string;
+  roles: string[];
 }
 
 export function mapServerMemberResponse(response: ServerMemberGetAllResponse[]): ServerMember[] {
@@ -18,6 +19,7 @@ export function mapServerMemberResponse(response: ServerMemberGetAllResponse[]):
     fullName: p.fullName,
     displayName: p.displayName,
     avatarUrl: p.avatarUrl,
+    roles: p.roles,
     isActive: true,
     createdAt: new Date(),
     createUserId: "",

@@ -25,6 +25,7 @@ export class JoinServerComponent implements OnInit {
   errorMessages: string[] = [];
 
   ngOnInit(): void {
+    console.log(this.router.url);
     this.route.queryParams.subscribe((params) => {
       const token = params["token"];
       if (token) {
@@ -41,7 +42,6 @@ export class JoinServerComponent implements OnInit {
   joinServer() {
     this.serverService.joinServerByToken(this.serverJoinToken).subscribe({
       next: (res) => {
-        console.log(res);
         this.router.navigate(["/chat"], { skipLocationChange: true });
       },
       error: (err) => {

@@ -5,7 +5,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Roboto", "sans-serif"],
+        "funnel-display": ['"Funnel Display"', "sans-serif"],
+        "funnel-sans": ['"Funnel Sans"', "sans-serif"],
+        "lexend-deca": ['"Lexend Deca"', "sans-serif"],
+        lexend: ['"Lexend"', "sans-serif"],
+        outfit: ['"Outfit"', "sans-serif"],
+        zain: ['"Zain"', "sans-serif"],
       },
     },
   },

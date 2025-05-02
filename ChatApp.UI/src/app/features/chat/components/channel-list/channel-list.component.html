@@ -1,5 +1,6 @@
 <aside
-  class="h-full bg-neutral-200/40 dark:bg-neutral-800/80 dark:text-neutral-200 overflow-y-auto flex-col hidden sm:flex"
+  class="h-full bg-neutral-200/40 dark:bg-neutral-800/80 dark:text-neutral-200 overflow-y-auto flex-col sm:flex channel-list"
+  [ngClass]="{ 'fixed sm:relative w-50 sm:w-full flex z-10 left-16': sidebarOpen }"
 >
   <div
     class="flex flex-row w-full pl-3 h-[4rem] border-b border-neutral-200 dark:border-neutral-700 items-center justify-between"

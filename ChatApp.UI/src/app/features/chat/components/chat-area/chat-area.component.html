@@ -1,10 +1,16 @@
-<section class="dark:bg-neutral-900 max-h-[100dvh] flex flex-col h-full">
+<section class="dark:bg-neutral-900 max-h-[100dvh] flex flex-col h-full message-container">
   <!-- Header -->
   <div
     class="flex justify-between items-center h-[4rem] border-b border-neutral-200 dark:border-neutral-700"
   >
     <div class="ml-3 md:hidden">
-      <svg class="size-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        class="size-8"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        (click)="openSidebar()"
+      >
         <g>
           <path
             id="Vector"
@@ -86,11 +92,7 @@
   </div>
 
   <!-- Messages (scrollable middle area) -->
-  <div
-    #chatContainer
-    [scrollTop]="chatContainer.scrollHeight"
-    class="flex-1 overflow-y-auto p-4 space-y-2 w-full"
-  >
+  <div #chatContainer class="flex-1 overflow-y-auto p-4 space-y-2 w-full">
     <!-- Message start -->
     @for (message of messages; track $index) { @if($index == 0 || !isSameDay(message.sendDate,
     messages[$index-1].sendDate)){
@@ -137,7 +139,10 @@
   </div>
 
   <!-- Input area -->
-  <div class="flex items-center p-2 border-t dark:border-neutral-600 h-[4rem]">
+  <form
+    (ngSubmit)="sendMessage()"
+    class="flex items-center p-2 border-t dark:border-neutral-600 h-[4rem]"
+  >
     <svg
       class="size-10 cursor-pointer group fill-none"
       viewBox="0 0 24 24"
@@ -177,41 +182,45 @@
       <input
         type="text"
         placeholder="Type message #senate"
+        name="message"
         [(ngModel)]="request.content"
         class="w-full dark:border-neutral-600 rounded-lg px-10 py-2 focus:outline-none dark:bg-neutral-800 dark:text-neutral-200 placeholder:text-neutral-300 dark:placeholder:text-neutral-600 placeholder:font-normal"
       />
     </div>
     @if(request.content == ""){
-    <svg
-      class="size-8 cursor-pointer group fill-none mx-2"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M14.5 10.5V5.5C14.5 4.11929 13.3807 3 12 3C10.6193 3 9.5 4.11929 9.5 5.5V10.5C9.5 11.8807 10.6193 13 12 13C13.3807 13 14.5 11.8807 14.5 10.5ZM12 1C9.51472 1 7.5 3.01472 7.5 5.5V10.5C7.5 12.9853 9.51472 15 12 15C14.4853 15 16.5 12.9853 16.5 10.5V5.5C16.5 3.01472 14.4853 1 12 1Z"
-        class="fill-indigo-500 dark:fill-indigo-500"
-      />
-      <path
-        d="M12 17C5.49999 17 5.99999 12 5.99999 12C5.99999 12 6.00001 11 5.00001 11C4.00001 11 3.99999 12 3.99999 12C3.99999 12 3.54013 18.4382 11 18.9657V22C11 22.5523 11.4477 23 12 23C12.5523 23 13 22.5523 13 22V18.9657C20.4599 18.4382 20 12 20 12C20 12 20 11 19 11C18 11 18 12 18 12C18 12 18.5 17 12 17Z"
-        class="fill-indigo-500 dark:fill-indigo-500"
-      />
-    </svg>
+    <button type="button">
+      <svg
+        class="size-8 cursor-pointer group fill-none mx-2"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M14.5 10.5V5.5C14.5 4.11929 13.3807 3 12 3C10.6193 3 9.5 4.11929 9.5 5.5V10.5C9.5 11.8807 10.6193 13 12 13C13.3807 13 14.5 11.8807 14.5 10.5ZM12 1C9.51472 1 7.5 3.01472 7.5 5.5V10.5C7.5 12.9853 9.51472 15 12 15C14.4853 15 16.5 12.9853 16.5 10.5V5.5C16.5 3.01472 14.4853 1 12 1Z"
+          class="fill-indigo-500 dark:fill-indigo-500"
+        />
+        <path
+          d="M12 17C5.49999 17 5.99999 12 5.99999 12C5.99999 12 6.00001 11 5.00001 11C4.00001 11 3.99999 12 3.99999 12C3.99999 12 3.54013 18.4382 11 18.9657V22C11 22.5523 11.4477 23 12 23C12.5523 23 13 22.5523 13 22V18.9657C20.4599 18.4382 20 12 20 12C20 12 20 11 19 11C18 11 18 12 18 12C18 12 18.5 17 12 17Z"
+          class="fill-indigo-500 dark:fill-indigo-500"
+        />
+      </svg>
+    </button>
     }@else {
-    <svg
-      class="size-8 cursor-pointer group fill-none mx-2"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      (click)="sendMessage()"
-    >
-      <path
-        d="M11.5003 12H5.41872M5.24634 12.7972L4.24158 15.7986C3.69128 17.4424 3.41613 18.2643 3.61359 18.7704C3.78506 19.21 4.15335 19.5432 4.6078 19.6701C5.13111 19.8161 5.92151 19.4604 7.50231 18.7491L17.6367 14.1886C19.1797 13.4942 19.9512 13.1471 20.1896 12.6648C20.3968 12.2458 20.3968 11.7541 20.1896 11.3351C19.9512 10.8529 19.1797 10.5057 17.6367 9.81135L7.48483 5.24303C5.90879 4.53382 5.12078 4.17921 4.59799 4.32468C4.14397 4.45101 3.77572 4.78336 3.60365 5.22209C3.40551 5.72728 3.67772 6.54741 4.22215 8.18767L5.24829 11.2793C5.34179 11.561 5.38855 11.7019 5.407 11.8459C5.42338 11.9738 5.42321 12.1032 5.40651 12.231C5.38768 12.375 5.34057 12.5157 5.24634 12.7972Z"
-        class="stroke-2 stroke-indigo-600 dark:stroke-indigo-500"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
+    <button type="submit">
+      <svg
+        class="size-8 cursor-pointer group fill-none mx-2"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.5003 12H5.41872M5.24634 12.7972L4.24158 15.7986C3.69128 17.4424 3.41613 18.2643 3.61359 18.7704C3.78506 19.21 4.15335 19.5432 4.6078 19.6701C5.13111 19.8161 5.92151 19.4604 7.50231 18.7491L17.6367 14.1886C19.1797 13.4942 19.9512 13.1471 20.1896 12.6648C20.3968 12.2458 20.3968 11.7541 20.1896 11.3351C19.9512 10.8529 19.1797 10.5057 17.6367 9.81135L7.48483 5.24303C5.90879 4.53382 5.12078 4.17921 4.59799 4.32468C4.14397 4.45101 3.77572 4.78336 3.60365 5.22209C3.40551 5.72728 3.67772 6.54741 4.22215 8.18767L5.24829 11.2793C5.34179 11.561 5.38855 11.7019 5.407 11.8459C5.42338 11.9738 5.42321 12.1032 5.40651 12.231C5.38768 12.375 5.34057 12.5157 5.24634 12.7972Z"
+          class="stroke-2 stroke-indigo-600 dark:stroke-indigo-500"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
     }
-  </div>
+  </form>
 </section>

@@ -1,6 +1,7 @@
 ﻿using ChatApp.Server.Application.Services;
 using ChatApp.Server.Domain.Roles;
 using ChatApp.Server.Domain.Users;
+using ChatApp.Server.Infrastructure.Configurations;
 using ChatApp.Server.Infrastructure.Context;
 using ChatApp.Server.Infrastructure.Options;
 using ChatApp.Server.Infrastructure.Services;
@@ -47,6 +48,8 @@ public static class InfrastructureRegistrar
              name: "redis",
              failureStatus: HealthStatus.Unhealthy,
              tags: new[] { "database" });
+
+        services.AddScoped<IRoleValidator<AppRole>, AppRoleValidator>();
 
         services
             .AddIdentity<AppUser, AppRole>(opt =>

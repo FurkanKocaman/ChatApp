@@ -5,6 +5,7 @@ import { TokenService } from "../../../../core/services/token.service";
 import { FormsModule } from "@angular/forms";
 import { Clipboard } from "@angular/cdk/clipboard";
 import { ToastService } from "../../../../core/services/toast.service";
+import { environment } from "../../../../../environments/environment.development";
 
 @Component({
   selector: "app-invite-member-modal",
@@ -18,6 +19,8 @@ export class InviteMemberModalComponent {
   @Output() close = new EventEmitter<void>();
 
   token: string = "";
+  frontendUrl = environment.frontendUrl;
+  invitationUrl = "";
 
   constructor(
     private serverService: ServerService,
@@ -39,15 +42,15 @@ export class InviteMemberModalComponent {
 
       this.tokenService.generateToken(this.request).subscribe({
         next: (res) => {
-          console.log(res);
           this.token = res;
+          this.invitationUrl = `${this.frontendUrl}join-server?token=${this.token}`;
         },
       });
     }
   }
 
   copyToClipboard() {
-    this.clipBoard.copy(this.token);
+    this.clipBoard.copy(this.invitationUrl);
     this.toastService.showToast("Copied to clipboard", "success", 5000);
   }
 

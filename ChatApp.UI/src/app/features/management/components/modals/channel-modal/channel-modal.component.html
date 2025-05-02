@@ -1,0 +1,156 @@
+<div class="dark:bg-gray-900 bg-gray-50 rounded-lg flex flex-col w-[100dvw] md:min-w-[30dvw] pb-10">
+  <div class="flex justify-end">
+    <button class="cursor-pointer">
+      <svg class="size-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          opacity="0.5"
+          d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+          class="dark:fill-gray-600/40"
+        />
+        <path
+          d="M8.96967 8.96967C9.26256 8.67678 9.73744 8.67678 10.0303 8.96967L12 10.9394L13.9697 8.96969C14.2626 8.6768 14.7374 8.6768 15.0303 8.96969C15.3232 9.26258 15.3232 9.73746 15.0303 10.0304L13.0607 12L15.0303 13.9696C15.3232 14.2625 15.3232 14.7374 15.0303 15.0303C14.7374 15.3232 14.2625 15.3232 13.9696 15.0303L12 13.0607L10.0304 15.0303C9.73746 15.3232 9.26258 15.3232 8.96969 15.0303C8.6768 14.7374 8.6768 14.2626 8.96969 13.9697L10.9394 12L8.96967 10.0303C8.67678 9.73744 8.67678 9.26256 8.96967 8.96967Z"
+          class="dark:fill-gray-400"
+        />
+      </svg>
+    </button>
+  </div>
+  <div class="flex flex-col mx-10">
+    <span class="font-semibold dark:text-gray-200 text-2xl">Create a new channel</span>
+    <p class="text-sm dark:text-gray-500 mt-3">Create a new channel for your server</p>
+  </div>
+  <div class="flex flex-col mx-10 mt-5">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="flex flex-col">
+        <label for="name" class="dark:text-gray-400 text-sm select-none">Channel Name</label>
+        <input
+          id="name"
+          formControlName="name"
+          type="text"
+          class="bg-transparent border rounded-md px-1.5 py-2 dark:border-gray-800 dark:text-gray-200 outline-none focus:border-indigo-700 my-1"
+        />
+      </div>
+      <div class="flex flex-col mt-3">
+        <label for="description" class="dark:text-gray-400 text-sm select-none">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          type="text"
+          class="bg-transparent border rounded-md px-1.5 py-2 dark:border-gray-800 dark:text-gray-200 outline-none focus:border-indigo-700 my-1 max-h-[10rem]"
+        ></textarea>
+      </div>
+      <div class="flex flex-col mt-3">
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer" formControlName="isPublic" />
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600 dark:peer-checked:bg-indigo-600"
+          ></div>
+          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300 select-none"
+            >Is Public</span
+          >
+        </label>
+      </div>
+
+      <div class="flex mt-3">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead
+            class="text-xs text-gray-700 uppercase dark:text-gray-400 border-b dark:border-gray-800"
+          >
+            <tr>
+              <th scope="col" class=""></th>
+              <th scope="col" class="px-6 py-3">Role</th>
+              <th scope="col" class="px-6 py-3">Permissions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b dark:border-gray-800 border-gray-200">
+              <td scope="row" class="">
+                <svg
+                  class="size-6 group cursor-pointer"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    opacity="0.5"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    class="stroke-gray-500 group-hover:stroke-red-600"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M15 12H9"
+                    class="stroke-gray-500 group-hover:stroke-red-600"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </td>
+              <td
+                scope="row"
+                class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              >
+                Moderator
+              </td>
+              <td class="px-6 py-3 flex select-none">
+                <svg
+                  class="size-6 mr-2 cursor-pointer"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 9H17M7 13H17M21 20L17.6757 18.3378C17.4237 18.2118 17.2977 18.1488 17.1656 18.1044C17.0484 18.065 16.9277 18.0365 16.8052 18.0193C16.6672 18 16.5263 18 16.2446 18H6.2C5.07989 18 4.51984 18 4.09202 17.782C3.71569 17.5903 3.40973 17.2843 3.21799 16.908C3 16.4802 3 15.9201 3 14.8V7.2C3 6.07989 3 5.51984 3.21799 5.09202C3.40973 4.71569 3.71569 4.40973 4.09202 4.21799C4.51984 4 5.0799 4 6.2 4H17.8C18.9201 4 19.4802 4 19.908 4.21799C20.2843 4.40973 20.5903 4.71569 20.782 5.09202C21 5.51984 21 6.0799 21 7.2V20Z"
+                    class="stroke-green-600"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <svg
+                  class="size-6 mr-2 cursor-pointer"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M19 10V12C19 15.866 15.866 19 12 19M5 10V12C5 15.866 8.13401 19 12 19M12 19V22M8 22H16M15 6H13M15 10H13M12 15C10.3431 15 9 13.6569 9 12V5C9 3.34315 10.3431 2 12 2C13.6569 2 15 3.34315 15 5V12C15 13.6569 13.6569 15 12 15Z"
+                    class="stroke-red-600"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <svg
+                  class="size-6 cursor-pointer"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M20 19H18C16.8954 19 16 18.1046 16 17V15C16 13.8954 16.8954 13 18 13H20M20 19V13M20 19V19C20 20.6569 18.6569 22 17 22H11M4 13V17C4 18.1046 4.89543 19 6 19V19C7.10457 19 8 18.1046 8 17V15C8 13.8954 7.10457 13 6 13H4ZM4 13V10C4 5.58172 7.58172 2 12 2V2C16.4183 2 20 5.58172 20 10V13"
+                    class="stroke-red-600"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-row justify-end mt-3 items-center">
+        <button
+          class="text-gray-400 dark:bg-gray-800 border rounded-md border-gray-700 py-3 px-3 w-fit text-sm"
+        >
+          Close
+        </button>
+        <button class="dark:bg-indigo-700 rounded-md py-3 px-3 w-fit mx-2 text-sm text-gray-100">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

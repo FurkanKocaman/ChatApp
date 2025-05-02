@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ServerService } from "../../../../core/services/server.service";
 import { Server } from "../../../../core/models/entities";
 import { Channel } from "../../../../core/models/entities/channel.model";
@@ -13,10 +13,13 @@ import { SignalChatService } from "../../../../core/services/signal-chat.service
   templateUrl: "./channel-list.component.html",
   styleUrl: "./channel-list.component.css",
 })
-export class ChannelListComponent implements OnInit {
+export class ChannelListComponent implements OnInit, AfterViewInit {
   isOpen = false;
   @Input() isCreateChannelModalOpen: boolean = false;
+  @Input() sidebarOpen: boolean = false;
+
   @Output() open = new EventEmitter<void>();
+  @Output() closeSidebar = new EventEmitter<void>();
 
   selectedServer: Server | null = null;
   channels: Channel[] = [];
@@ -28,6 +31,14 @@ export class ChannelListComponent implements OnInit {
     private signalService: SignalChatService
   ) {}
 
+  ngAfterViewInit(): void {
+    const messageContainers = document.querySelectorAll(".channel-list");
+    messageContainers.forEach((el) => {
+      el.classList.add("notranslate");
+      el.setAttribute("translate", "no");
+    });
+  }
+
   ngOnInit(): void {
     this.serverService.server$.subscribe((server) => {
       this.selectedServer = server;
@@ -35,7 +46,6 @@ export class ChannelListComponent implements OnInit {
       if (server) {
         this.channelService.getChannelsByServerId(server!.id).subscribe((res) => {
           this.channels = res;
-          console.log(res);
         });
       }
     });
@@ -46,9 +56,14 @@ export class ChannelListComponent implements OnInit {
     this.open.emit();
   }
 
+  closeSidebarHandler() {
+    this.closeSidebar.emit();
+  }
+
   selectChannel(channel: Channel) {
     this.channelService.selectChannel(channel);
     this.joinChannel(channel.id);
+    this.closeSidebarHandler();
   }
 
   channelSettingsClick(event: MouseEvent, channel: Channel) {

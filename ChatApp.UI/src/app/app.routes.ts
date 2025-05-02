@@ -21,6 +21,16 @@ export const routes: Routes = [
       import("./features/join-server/join-server.component").then((m) => m.JoinServerComponent),
     canActivate: [authGuard],
   },
+  {
+    path: "management",
+    loadComponent: () =>
+      import("./features/management/layouts/management-layout/management-layout.component").then(
+        (m) => m.ManagementLayoutComponent
+      ),
+    loadChildren: () =>
+      import("./features/management/management.route").then((m) => m.MANAGEMENT_ROUTES),
+    // canActivate: [authGuard],
+  },
   // { path: '', component: ChatPageComponent, canActivate: [authGuard] },
   // {
   //   path: 'chat',

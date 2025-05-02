@@ -5,4 +5,5 @@ export interface ServerMemberGetAllResponse {
   fullName: string;
   displayName?: string;
   avatarUrl?: string;
+  roles: string[];
 }

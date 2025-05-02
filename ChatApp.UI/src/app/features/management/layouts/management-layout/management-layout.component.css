@@ -1,0 +1,9 @@
+/* Add any custom styles if needed */
+.sidebar-transition {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Smooth transitions for sidebar */
+[class*="ml-"] {
+  transition: margin-left 0.3s ease-in-out;
+}

@@ -367,10 +367,14 @@ namespace ChatApp.Server.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<Guid>("ServerId")
                         .HasColumnType("uniqueidentifier");
@@ -384,6 +388,10 @@ namespace ChatApp.Server.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ServerId");
+
+                    b.HasIndex("NormalizedName", "ServerId")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameServerIdIndex");
 
                     b.ToTable("Roles");
                 });

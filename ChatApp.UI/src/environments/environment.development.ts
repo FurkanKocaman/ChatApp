@@ -2,6 +2,7 @@ export const environment = {
   isProduction: false,
   apiUrl: "https://localhost:7063/",
   wwwrootUrl: "https://localhost:7063/",
+  frontendUrl: "http://localhost:4200/",
 };
 export const environmentSignal = {
   isProduction: false,

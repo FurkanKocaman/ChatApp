@@ -59,7 +59,8 @@ internal sealed class ApplicationDbContext: IdentityDbContext<AppUser, AppRole, 
             .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<AppRole>()
-            .Property(p => p.Level).HasColumnType("decimal(18,2)");        
+            .Property(p => p.Level).HasColumnType("decimal(18,2)");      
+        
         modelBuilder.Entity<Channel>()
             .HasOne(p => p.Server)
             .WithMany(p => p.Channels)
