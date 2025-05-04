@@ -1,5 +1,6 @@
 ﻿using ChatApp.Server.Application.Channels;
 using MediatR;
+using PersonelYonetim.Server.Domain.RoleClaim;
 using TS.Result;
 
 namespace ChatApp.Server.WebAPI.Modules;
@@ -16,15 +17,22 @@ public static class ChannelModule
                 var response = await sender.Send(request, cancellationToken);
                 return response.IsSuccessful ? Results.Ok(response) : Results.InternalServerError(response);
             })
-            .RequireAuthorization().Produces<Result<string>>();
+            .RequireAuthorization(Permissions.CreateChannel).Produces<Result<string>>();
 
-
-        group.MapGet("/get",
-            async (ISender sender, [AsParameters]ChannelGetQuery request, CancellationToken cancellationToken) =>
+        group.MapPut("/update",
+            async (ISender sender, ChannelUpdateCommand request, CancellationToken cancellationToken) =>
             {
                 var response = await sender.Send(request, cancellationToken);
-                return Results.Ok(response);
+                return response.IsSuccessful ? Results.Ok(response) : Results.InternalServerError(response);
             })
-            .RequireAuthorization().Produces<Result<string>>();
+            .RequireAuthorization(Permissions.EditChannel).Produces<Result<string>>();
+
+        group.MapGet("/get",
+            async (ISender sender, [AsParameters] ChannelGetQuery request, CancellationToken cancellationToken) =>
+            {
+                var response = await sender.Send(request, cancellationToken);
+                return response.IsSuccessful ? Results.Ok(response) : Results.InternalServerError(response);
+            })
+            .RequireAuthorization().Produces<Result<ChannelGetQueryResponse>>();
     }
 }

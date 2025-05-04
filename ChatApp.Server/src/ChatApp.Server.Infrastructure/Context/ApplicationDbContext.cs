@@ -1,4 +1,5 @@
 ﻿using ChatApp.Server.Domain.Abstractions;
+using ChatApp.Server.Domain.ChannelRolePermissions;
 using ChatApp.Server.Domain.Channels;
 using ChatApp.Server.Domain.ConversationParticipants;
 using ChatApp.Server.Domain.Conversations;
@@ -36,6 +37,7 @@ internal sealed class ApplicationDbContext: IdentityDbContext<AppUser, AppRole, 
     public DbSet<DirectMessage> DirectMessages { get; set; } = default!;
     public DbSet<ServerMemberRole> ServerMemberRoles { get; set; } = default!;
     public DbSet<Token> Tokens { get; set; } = default!;
+    public DbSet<ChannelRolePermission> ChannelRolePermissions { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -60,18 +62,6 @@ internal sealed class ApplicationDbContext: IdentityDbContext<AppUser, AppRole, 
 
         modelBuilder.Entity<AppRole>()
             .Property(p => p.Level).HasColumnType("decimal(18,2)");      
-        
-        modelBuilder.Entity<Channel>()
-            .HasOne(p => p.Server)
-            .WithMany(p => p.Channels)
-            .HasForeignKey(p => p.ServerId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<Message>()
-            .HasOne(p => p.Channel)
-            .WithMany(p => p.Messages)
-            .HasForeignKey(p => p.ChannelId)
-            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<ServerMember>()
             .HasOne(p => p.Server)

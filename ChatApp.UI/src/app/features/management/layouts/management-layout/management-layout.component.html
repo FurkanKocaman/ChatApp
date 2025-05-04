@@ -34,7 +34,7 @@
       </button>
       <button
         class="p-2 border rounded-full hover:bg-gray-100 dark:hover:bg-gray-700/50 dark:border-gray-700 border-neutral-200 z-20 group"
-        (click)="openSidebar($event)"
+        (click)="toggleTheme()"
       >
         @if(isDarkMode){
         <svg
@@ -43,7 +43,6 @@
           class="size-6 p-1"
           viewBox="0 0 512.000000 512.000000"
           preserveAspectRatio="xMidYMid meet"
-          (click)="toggleTheme()"
         >
           <g
             transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
@@ -111,7 +110,6 @@ l-43 30 -286 2 c-158 1 -301 -2 -318 -6z"
           class="size-6 p-1"
           viewBox="0 0 512.000000 512.000000"
           preserveAspectRatio="xMidYMid meet"
-          (click)="toggleTheme()"
         >
           <g
             transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"

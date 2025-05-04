@@ -29,6 +29,8 @@ export class ChannelCreateModalComponent implements OnInit {
     description: undefined,
     iconUrl: undefined,
     channeltype: 0,
+    isPublic: false,
+    roleIds: [],
   };
 
   ngOnInit(): void {

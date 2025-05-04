@@ -22,6 +22,24 @@ namespace ChatApp.Server.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ChatApp.Server.Domain.ChannelRolePermissions.ChannelRolePermission", b =>
+                {
+                    b.Property<Guid>("ChannelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CanEdit")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ChannelId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("ChannelRolePermissions");
+                });
+
             modelBuilder.Entity("ChatApp.Server.Domain.Channels.Channel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -41,7 +59,8 @@ namespace ChatApp.Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("IconUrl")
                         .HasColumnType("nvarchar(max)");
@@ -52,9 +71,13 @@ namespace ChatApp.Server.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid>("ServerId")
                         .HasColumnType("uniqueidentifier");
@@ -417,6 +440,9 @@ namespace ChatApp.Server.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ActiveRoleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("CreateUserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -451,6 +477,8 @@ namespace ChatApp.Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActiveRoleId");
 
                     b.HasIndex("ServerId");
 
@@ -734,6 +762,25 @@ namespace ChatApp.Server.Infrastructure.Migrations
                     b.ToTable("RoleClaims");
                 });
 
+            modelBuilder.Entity("ChatApp.Server.Domain.ChannelRolePermissions.ChannelRolePermission", b =>
+                {
+                    b.HasOne("ChatApp.Server.Domain.Channels.Channel", "Channel")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChatApp.Server.Domain.Roles.AppRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Channel");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("ChatApp.Server.Domain.Channels.Channel", b =>
                 {
                     b.HasOne("ChatApp.Server.Domain.Servers.Server", "Server")
@@ -841,6 +888,10 @@ namespace ChatApp.Server.Infrastructure.Migrations
 
             modelBuilder.Entity("ChatApp.Server.Domain.ServerMembers.ServerMember", b =>
                 {
+                    b.HasOne("ChatApp.Server.Domain.Roles.AppRole", "ActiveRole")
+                        .WithMany()
+                        .HasForeignKey("ActiveRoleId");
+
                     b.HasOne("ChatApp.Server.Domain.Servers.Server", "Server")
                         .WithMany("Members")
                         .HasForeignKey("ServerId")
@@ -852,6 +903,8 @@ namespace ChatApp.Server.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("ActiveRole");
 
                     b.Navigation("Server");
 
@@ -918,6 +971,8 @@ namespace ChatApp.Server.Infrastructure.Migrations
             modelBuilder.Entity("ChatApp.Server.Domain.Channels.Channel", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("RolePermissions");
                 });
 
             modelBuilder.Entity("ChatApp.Server.Domain.Conversations.Conversation", b =>

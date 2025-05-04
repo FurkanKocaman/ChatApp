@@ -1,4 +1,5 @@
 ﻿using ChatApp.Server.Domain.Abstractions;
+using ChatApp.Server.Domain.ChannelRolePermissions;
 using ChatApp.Server.Domain.Messages;
 
 namespace ChatApp.Server.Domain.Channels;
@@ -10,7 +11,9 @@ public sealed class Channel : Entity
     public ChannelType Type { get; set; }
     public Guid ServerId { get; set; }
     public Servers.Server? Server { get; set; }
-    public ICollection<Message> Messages { get;set; } = new List<Message>(); 
+    public bool IsPublic { get; set; }
+    public ICollection<Message> Messages { get;set; } = new List<Message>();
+    public ICollection<ChannelRolePermission> RolePermissions { get; set; } = new List<ChannelRolePermission>();
 }
 
 public enum ChannelType

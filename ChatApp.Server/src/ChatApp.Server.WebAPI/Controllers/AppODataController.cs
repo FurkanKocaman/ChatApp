@@ -1,4 +1,6 @@
-﻿using ChatApp.Server.Application.Messages;
+﻿using ChatApp.Server.Application.Channels;
+using ChatApp.Server.Application.Messages;
+using ChatApp.Server.Application.Roles;
 using ChatApp.Server.Application.ServerMembers;
 using ChatApp.Server.Application.Servers;
 using ChatApp.Server.Application.Users;
@@ -28,6 +30,10 @@ public class AppODataController(
         builder.EntitySet<GetUserJoinedServersQueryResponse>("user-servers");
         builder.EntitySet<MessagesGetAllQueryResponse>("messages");
         builder.EntitySet<ServerMembersGetAllQueryResponse>("server-members");
+        builder.EntitySet<GetChannelsInServerQueryResponse>("server-channels");
+        builder.EntitySet<ChannelGetDetailsQueryResponse>("channel-details");
+        builder.EntitySet<GetRoleDetailsByServerQueryResponse>("roles");
+        builder.EntitySet<GetUserModeratedServersQueryResponse>("servers-moderated");
 
         return builder.GetEdmModel();
     }
@@ -64,11 +70,43 @@ public class AppODataController(
         return response;
     }
 
+    [HttpGet("server-channels/{serverId}")]
+    [Authorize()]
+    public async Task<IQueryable<GetChannelsInServerQueryResponse>> GetChannels(Guid serverId, CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new GetChannelsInServerQuery(serverId), cancellationToken);
+        return response;
+    }
+
     [HttpGet("server-members/{serverId}")]
     [Authorize()]
     public async Task<IQueryable<ServerMembersGetAllQueryResponse>> GetServerMembers(Guid serverId, CancellationToken cancellationToken)
     {
         var response = await sender.Send(new ServerMembersGetAllQuery(serverId), cancellationToken);
+        return response;
+    }
+
+    [HttpGet("channel-details/{serverId}")]
+    [Authorize()]
+    public async Task<IQueryable<ChannelGetDetailsQueryResponse>> GetChannelDetails(Guid serverId, CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new ChannelGetDetailsQuery(serverId), cancellationToken);
+        return response;
+    }
+
+    [HttpGet("roles/{serverId}")]
+    [Authorize()]
+    public async Task<IQueryable<GetRoleDetailsByServerQueryResponse>> GetRoleDetails(Guid serverId, CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new GetRoleDetailsByServerQuery(serverId), cancellationToken);
+        return response;
+    }
+
+    [HttpGet("servers-moderated")]
+    [Authorize()]
+    public async Task<IQueryable<GetUserModeratedServersQueryResponse>> GetServersModeratedByUser(CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new GetUserModeratedServersQuery(), cancellationToken);
         return response;
     }
 }

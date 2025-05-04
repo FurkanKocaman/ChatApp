@@ -91,7 +91,8 @@ internal sealed class ServerCreateCommandHandler(
                     if (permission is not null)
                     {
                         await roleManager.AddClaimAsync(adminRole, new System.Security.Claims.Claim("permission",permission));
-                    }
+                        await roleManager.AddClaimAsync(moderatorRole, new System.Security.Claims.Claim("permission", permission));
+                }
                 }
 
                 ServerMember member = new()

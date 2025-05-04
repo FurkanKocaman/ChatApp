@@ -11,5 +11,6 @@ public static class RouteRegistrar
         app.RegisterMessageRoutes();
         app.RegisterTokenRoutes();
         app.RegisterServerMemberRoutes();
+        app.RegisterRoleRoutes();
     }
 }

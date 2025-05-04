@@ -15,7 +15,7 @@
           [class.dark:border-indigo-700]="isServerMenuOpen"
           (click)="toggleServerMenu()"
         >
-          <span>Server1</span>
+          <span>{{ selectedServer?.name }}</span>
           <svg class="size-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M16.0686 15H7.9313C7.32548 15 7.02257 15 6.88231 15.1198C6.76061 15.2238 6.69602 15.3797 6.70858 15.5393C6.72305 15.7232 6.93724 15.9374 7.36561 16.3657L11.4342 20.4344C11.6323 20.6324 11.7313 20.7314 11.8454 20.7685C11.9458 20.8011 12.054 20.8011 12.1544 20.7685C12.2686 20.7314 12.3676 20.6324 12.5656 20.4344L16.6342 16.3657C17.0626 15.9374 17.2768 15.7232 17.2913 15.5393C17.3038 15.3797 17.2392 15.2238 17.1175 15.1198C16.9773 15 16.6744 15 16.0686 15Z"
@@ -41,20 +41,24 @@
             [class.invisible]="!isServerMenuOpen"
           >
             <ul class="w-full flex flex-col">
-              <li class="px-3 py-2 dark:hover:bg-indigo-800 hover:bg-indigo-100 transition-colors">
-                Server2
+              @for (server of servers; track $index) {
+              <li
+                class="px-3 py-2 dark:hover:bg-indigo-800 hover:bg-indigo-100 transition-colors"
+                (click)="setSelectedServer(server)"
+              >
+                {{ server.name }}
               </li>
-              <li class="px-3 py-2 dark:hover:bg-indigo-800 hover:bg-indigo-100 transition-colors">
-                Server3
-              </li>
-              <li class="px-3 py-2 dark:hover:bg-indigo-800 hover:bg-indigo-100 transition-colors">
-                Server4
-              </li>
-              <li class="px-3 py-2 dark:hover:bg-indigo-800 hover:bg-indigo-100 transition-colors">
-                Server5
-              </li>
+              }
             </ul>
           </div>
+        </div>
+        <div>
+          <button
+            class="border rounded-md border-blue-600 px-3 py-1.5"
+            (click)="openRoleCreateModal()"
+          >
+            <span class="dark:text-gray-200">Create Role</span>
+          </button>
         </div>
       </div>
       <div class="px-5 pb-8">
@@ -103,19 +107,26 @@
                   <th class="px-4 py-2">Users</th>
                   <th class="px-4 py-2">Level</th>
                   <th class="px-4 py-2">Accessible Channel Count</th>
+                  <th class="px-4 py-2">permissions</th>
                   <th class="px-4 py-2">Status</th>
                   <th class="px-4 py-2 text-center">Action</th>
                 </tr>
               </thead>
               <tbody class="dark:text-white">
+                @for (role of roles; track $index) {
                 <tr class="border-b dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800">
                   <td class="px-4 py-2"><input type="checkbox" /></td>
                   <td class="px-4 py-2">
-                    <div class="font-semibold">Moderator</div>
+                    <div class="font-semibold">{{ role.name }}</div>
                   </td>
-                  <td class="px-4 py-2 text-gray-600 dark:text-gray-400">10</td>
-                  <td class="px-4 py-2 text-gray-600 dark:text-gray-400">2</td>
-                  <td class="px-4 py-2 text-gray-600 dark:text-gray-400">12</td>
+                  <td class="px-4 py-2 text-gray-600 dark:text-gray-400">{{ role.userCount }}</td>
+                  <td class="px-4 py-2 text-gray-600 dark:text-gray-400">{{ role.level }}</td>
+                  <td class="px-4 py-2 text-gray-600 dark:text-gray-400">
+                    {{ role.accessibleChannelCount }}
+                  </td>
+                  <td class="px-4 py-2 text-gray-600 dark:text-gray-400">
+                    {{ role.permissions.length }}
+                  </td>
                   <td class="px-4 py-2">
                     <span
                       class="px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
@@ -129,6 +140,7 @@
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
+                        (click)="openRoleEditModal(role)"
                       >
                         <path
                           d="M15.2869 3.15178L14.3601 4.07866L5.83882 12.5999L5.83881 12.5999C5.26166 13.1771 4.97308 13.4656 4.7249 13.7838C4.43213 14.1592 4.18114 14.5653 3.97634 14.995C3.80273 15.3593 3.67368 15.7465 3.41556 16.5208L2.32181 19.8021L2.05445 20.6042C1.92743 20.9852 2.0266 21.4053 2.31063 21.6894C2.59466 21.9734 3.01478 22.0726 3.39584 21.9456L4.19792 21.6782L7.47918 20.5844L7.47919 20.5844C8.25353 20.3263 8.6407 20.1973 9.00498 20.0237C9.43469 19.8189 9.84082 19.5679 10.2162 19.2751C10.5344 19.0269 10.8229 18.7383 11.4001 18.1612L11.4001 18.1612L19.9213 9.63993L20.8482 8.71306C22.3839 7.17735 22.3839 4.68748 20.8482 3.15178C19.3125 1.61607 16.8226 1.61607 15.2869 3.15178Z"
@@ -156,6 +168,7 @@
                     </button>
                   </td>
                 </tr>
+                }
               </tbody>
             </table>
 

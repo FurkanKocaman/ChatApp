@@ -3,7 +3,11 @@ import { Injectable } from "@angular/core";
 import { ServerCreateRequest } from "../models/requests";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { environment } from "../../../environments/environment.development";
-import { GetUserJoinedServersQueryResponse, ServerMemberGetAllResponse } from "../models/responses";
+import {
+  GetUserJoinedServersQueryResponse,
+  ModeratedServerResponse,
+  ServerMemberGetAllResponse,
+} from "../models/responses";
 import {
   mapServerMemberResponse,
   mapServerResponse,
@@ -41,6 +45,12 @@ export class ServerService {
         `${environment.apiUrl}odata/user-servers`
       )
       .pipe(map((response) => mapServerResponse(response.value)));
+  }
+
+  getModeratedServers(): Observable<ModeratedServerResponse[]> {
+    return this.httpClient
+      .get<{ value: ModeratedServerResponse[] }>(`${environment.apiUrl}odata/servers-moderated`)
+      .pipe(map((response) => response.value));
   }
 
   async setSelectedServer(server: Server) {
