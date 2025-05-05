@@ -14,6 +14,7 @@ export function mapServerResponse(response: GetUserJoinedServersQueryResponse[])
     id: r.id,
     name: r.name,
     isActive: true,
+    iconUrl: undefined,
     createdAt: new Date(),
     createUserId: "",
     createUserName: "",

@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using PersonelYonetim.Server.Domain.RoleClaim;
 using TS.Result;
 
-namespace ChatApp.Server.WebAPI.Modules;
+namespace ChatApp.Server.WebAPI.Modules.v1;
 
 public static class TokenModule
 {
     public static void RegisterTokenRoutes(this IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder group = app.MapGroup("/token").WithTags("Tokens");
+        RouteGroupBuilder group = app.MapGroup("api/v1/token").WithTags("Tokens");
 
         group.MapPost("/create",
             async (ISender sender, GenerateServerInvitationTokenCommand request, CancellationToken cancellationToken) =>

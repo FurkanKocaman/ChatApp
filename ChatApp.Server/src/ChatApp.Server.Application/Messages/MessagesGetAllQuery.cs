@@ -1,4 +1,5 @@
 ﻿using ChatApp.Server.Application.Services;
+using ChatApp.Server.Domain.DTOs;
 using ChatApp.Server.Domain.Messages;
 using ChatApp.Server.Domain.Users;
 using MediatR;
@@ -6,8 +7,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ChatApp.Server.Application.Messages;
 public sealed record MessagesGetAllQuery(
-    Guid ChannelId
-    ) : IRequest<IQueryable<MessagesGetAllQueryResponse>>;
+    Guid channelId,
+    int page,
+    int pageSize
+    ) : IRequest<PagedResult<MessagesGetAllQueryResponse>>;
 
 public sealed class MessagesGetAllQueryResponse
 {
@@ -27,16 +30,22 @@ internal sealed class MessagesGetAllQueryHandler(
     IMessageRepository messageRepository,
     UserManager<AppUser> userManager,
     ICurrentUserService currentUserService
-    ) : IRequestHandler<MessagesGetAllQuery, IQueryable<MessagesGetAllQueryResponse>>
+    ) : IRequestHandler<MessagesGetAllQuery, PagedResult<MessagesGetAllQueryResponse>>
 {
-    public Task<IQueryable<MessagesGetAllQueryResponse>> Handle(MessagesGetAllQuery request, CancellationToken cancellationToken)
+    public Task<PagedResult<MessagesGetAllQueryResponse>> Handle(MessagesGetAllQuery request, CancellationToken cancellationToken)
     {
         Guid? userId = currentUserService.UserId;
         
         if(!userId.HasValue)
-            return Task.FromResult(Enumerable.Empty<MessagesGetAllQueryResponse>().AsQueryable());
+            return Task.FromResult(new PagedResult<MessagesGetAllQueryResponse>(new List<MessagesGetAllQueryResponse>(),0,0,0));
 
-        var messages = messageRepository.Where(p => p.ChannelId == request.ChannelId)
+        var query = messageRepository.Where(p => p.ChannelId == request.channelId);
+
+        var totalCount = query.Count();
+
+        var messages = query
+            .Skip((request.page - 1) * request.pageSize)
+            .Take(request.pageSize)
             .GroupJoin(userManager.Users,
                 message => message.CreateUserId,
                 createUsers => createUsers.Id,
@@ -55,12 +64,9 @@ internal sealed class MessagesGetAllQueryHandler(
                     FileSize = uc.message.FileSize,
                     SenderName = createUser != null ? createUser.FullName : "null",
                     SendDate = uc.message.CreatedAt,
-                }).OrderBy(p => p.SendDate).AsQueryable();
+                }).OrderBy(p => p.SendDate);
 
-
-
-
-        return Task.FromResult(messages);
+        return Task.FromResult(new PagedResult<MessagesGetAllQueryResponse>(messages,request.page, request.pageSize,totalCount));
     }
 }
 

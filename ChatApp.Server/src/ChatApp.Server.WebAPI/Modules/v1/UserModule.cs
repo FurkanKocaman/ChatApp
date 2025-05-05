@@ -2,13 +2,13 @@
 using MediatR;
 using TS.Result;
 
-namespace ChatApp.Server.WebAPI.Modules;
+namespace ChatApp.Server.WebAPI.Modules.v1;
 
 public static class UserModule
 {
     public static void RegisterUserRoutes(this IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder group = app.MapGroup("/users").WithTags("Users");
+        RouteGroupBuilder group = app.MapGroup("api/v1/users").WithTags("Users");
 
         group.MapPost("/create",
             async (ISender sender, UserCreateCommand request, CancellationToken cancellationToken) =>

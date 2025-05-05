@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as signalR from "@microsoft/signalr";
 import { UserService } from "./user.service";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subscription } from "rxjs";
 import { Message, User } from "../models/entities";
 import { environmentSignal } from "../../../environments/environment.development";
 import { ServerService } from "./server.service";
@@ -75,6 +75,7 @@ export class SignalChatService {
   joinChannel(channelId: string) {
     this.userService.user$.subscribe({
       next: (res) => {
+        console.log("Joined channel");
         this.hubConnection
           .invoke("JoinChannel", channelId)
           .catch((err) => console.error("JoinChannel error:", err));
@@ -100,8 +101,8 @@ export class SignalChatService {
   receiveMessage(callback: (message: Message) => void) {
     this.hubConnection.on("ReceiveMessage", callback);
   }
-  receiveChannelMessage(callback: (message: MessageGetAllResponse) => void) {
-    this.hubConnection.on("ReceiveChannelMessage", callback);
+  receiveChannelMessage(callback: (message: MessageGetAllResponse) => Subscription) {
+    return this.hubConnection.on("ReceiveChannelMessage", callback);
   }
 
   userConnected(callback: (userId: string) => void) {

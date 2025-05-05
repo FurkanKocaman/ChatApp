@@ -4,7 +4,7 @@ import { ChannelCreateRequest, ChannelUpdateRequest } from "../models/requests";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { environment } from "../../../environments/environment.development";
 
-import { ChannelResponse, SingleChannelModel } from "../models/responses";
+import { ChannelResponse, PaginatedResponse, SingleChannelModel } from "../models/responses";
 import { Channel, mapChannelResponse } from "../models/entities";
 import { GetChannelDetail } from "../models/responses/get-channel-detail.model";
 
@@ -39,8 +39,10 @@ export class ChannelService {
 
   getChannelsByServerId(id: string): Observable<Channel[]> {
     return this.httpClient
-      .get<{ value: ChannelResponse[] }>(`${environment.apiUrl}odata/server-channels/${id}`)
-      .pipe(map((response) => mapChannelResponse(response.value)));
+      .get<ChannelResponse[]>(
+        `${environment.apiUrl}servers/${id}/channels?view=summaries&page=1&pageSize=20`
+      )
+      .pipe(map((response) => mapChannelResponse(response)));
   }
 
   selectChannel(channel: Channel) {
@@ -49,8 +51,10 @@ export class ChannelService {
 
   getChannelDetails(serverId: string): Observable<GetChannelDetail[]> {
     return this.httpClient
-      .get<{ value: GetChannelDetail[] }>(`${environment.apiUrl}odata/channel-details/${serverId}`)
-      .pipe(map((p) => p.value));
+      .get<PaginatedResponse<GetChannelDetail>>(
+        `${environment.apiUrl}servers/${serverId}/channels?view=details&page=1&pageSize=20`
+      )
+      .pipe(map((p) => p.items));
   }
 
   getSingleChannel(id: string): Observable<SingleChannelModel> {
@@ -60,7 +64,7 @@ export class ChannelService {
         errorMessages: string[];
         isSuccessful: boolean;
         statusCode: number;
-      }>(`${environment.apiUrl}channels/get?id=${id}`)
+      }>(`${environment.apiUrl}channels/${id}`)
       .pipe(map((p) => p.data));
   }
 }

@@ -6,6 +6,7 @@ import { environment } from "../../../environments/environment.development";
 import {
   GetUserJoinedServersQueryResponse,
   ModeratedServerResponse,
+  PaginatedResponse,
   ServerMemberGetAllResponse,
 } from "../models/responses";
 import {
@@ -41,16 +42,14 @@ export class ServerService {
   }
   getUserJoinedServers(): Observable<Server[]> {
     return this.httpClient
-      .get<{ value: GetUserJoinedServersQueryResponse[] }>(
-        `${environment.apiUrl}odata/user-servers`
-      )
-      .pipe(map((response) => mapServerResponse(response.value)));
+      .get<GetUserJoinedServersQueryResponse[]>(`${environment.apiUrl}servers`)
+      .pipe(map((response) => mapServerResponse(response)));
   }
 
   getModeratedServers(): Observable<ModeratedServerResponse[]> {
     return this.httpClient
-      .get<{ value: ModeratedServerResponse[] }>(`${environment.apiUrl}odata/servers-moderated`)
-      .pipe(map((response) => response.value));
+      .get<ModeratedServerResponse[]>(`${environment.apiUrl}servers/moderated`)
+      .pipe(map((response) => response));
   }
 
   async setSelectedServer(server: Server) {
@@ -67,10 +66,10 @@ export class ServerService {
 
   getServerMembers(id: string): Observable<ServerMember[]> {
     return this.httpClient
-      .get<{ value: ServerMemberGetAllResponse[] }>(
-        `${environment.apiUrl}odata/server-members/${id}`
+      .get<PaginatedResponse<ServerMemberGetAllResponse>>(
+        `${environment.apiUrl}servers/${id}/members?view=details&page=1&pageSize=20`
       )
-      .pipe(map((res) => mapServerMemberResponse(res.value)));
+      .pipe(map((res) => mapServerMemberResponse(res.items)));
   }
 
   joinServerByToken(token: string): Observable<string> {

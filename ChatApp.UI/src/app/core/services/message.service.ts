@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { MessageSendRequest } from "../models/requests";
 import { map, Observable } from "rxjs";
 import { environment } from "../../../environments/environment.development";
-import { MessageGetAllResponse } from "../models/responses";
+import { MessageGetAllResponse, PaginatedResponse } from "../models/responses";
 import { mapMessageResponse, Message } from "../models/entities";
 
 @Injectable({
@@ -29,7 +29,7 @@ export class MessageService {
 
   getMessages(id: string): Observable<Message[]> {
     return this.httpClient
-      .get<{ value: MessageGetAllResponse[] }>(`${environment.apiUrl}odata/messages/${id}`)
-      .pipe(map((response) => mapMessageResponse(response.value)));
+      .get<PaginatedResponse<MessageGetAllResponse>>(`${environment.apiUrl}messages/${id}`)
+      .pipe(map((response) => mapMessageResponse(response.items)));
   }
 }

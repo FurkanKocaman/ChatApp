@@ -21,35 +21,36 @@ export class UserService {
   }
 
   getCurrentUser(): Observable<User | null> {
-    return this.httpClient.get<UserResponse>(`${environment.apiUrl}odata/user-current`).pipe(
+    return this.httpClient.get<UserResponse>(`${environment.apiUrl}user/current`).pipe(
       map((response) => mapUserResponse(response)),
       tap((user) => {
+        console.log(user);
         this.userSubject.next(user);
       }),
       catchError(() => of(null))
     );
   }
 
-  getUserChannels(): Observable<Channel[]> {
-    return this.httpClient.get<Channel[]>(`${environment.apiUrl}/User/GetUserChannels`);
-  }
+  // getUserChannels(): Observable<Channel[]> {
+  //   return this.httpClient.get<Channel[]>(`${environment.apiUrl}/User/GetUserChannels`);
+  // }
 
-  getOwnedChannels(): Observable<Channel[]> {
-    return this.httpClient.get<Channel[]>(`${environment.apiUrl}/User/GetOwnedChannels`);
-  }
+  // getOwnedChannels(): Observable<Channel[]> {
+  //   return this.httpClient.get<Channel[]>(`${environment.apiUrl}/User/GetOwnedChannels`);
+  // }
 
-  getUserByUsername(username: string): Observable<User | undefined> {
-    return this.httpClient.get<User | undefined>(
-      `${environment.apiUrl}/User/GetUserByUsername/?username=${username}`
-    );
-  }
-  getUsersById(usersId: string[]): Observable<User[]> {
-    return this.httpClient.post<User[]>(`${environment.apiUrl}/User/GetUserById`, usersId);
-  }
+  // getUserByUsername(username: string): Observable<User | undefined> {
+  //   return this.httpClient.get<User | undefined>(
+  //     `${environment.apiUrl}/User/GetUserByUsername/?username=${username}`
+  //   );
+  // }
+  // getUsersById(usersId: string[]): Observable<User[]> {
+  //   return this.httpClient.post<User[]>(`${environment.apiUrl}/User/GetUserById`, usersId);
+  // }
 
-  uploadUser(user: User): Observable<User> {
-    return this.httpClient.post<User>(`${environment.apiUrl}/User/UpdateUser`, user);
-  }
+  // uploadUser(user: User): Observable<User> {
+  //   return this.httpClient.post<User>(`${environment.apiUrl}/User/UpdateUser`, user);
+  // }
 
   checkUsername(username: string): Observable<boolean> {
     if (!username) {

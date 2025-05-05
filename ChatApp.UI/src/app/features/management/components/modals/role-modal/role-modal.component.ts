@@ -4,6 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angu
 import { RoleDetailsResponse } from "../../../../../core/models/responses";
 import { RoleService } from "../../../../../core/services/role.service";
 import { RoleCreateRequest, RoleUppdateRequest } from "../../../../../core/models/requests";
+import { ModalService } from "../../../../../core/services/modal.service";
 
 @Component({
   selector: "app-role-modal",
@@ -18,6 +19,7 @@ export class RoleModalComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private roleService = inject(RoleService);
+  private modalService = inject(ModalService);
 
   permissionsList = [
     "channel.create",
@@ -68,12 +70,12 @@ export class RoleModalComponent implements OnInit {
 
   createRole() {
     this.roleService.roleCreate(this.toRoleCreateRequest()).subscribe((res) => {
-      console.log(res);
+      this.onClose();
     });
   }
   updateRole() {
     this.roleService.updateRole(this.toRoleUpdateRequest()).subscribe((res) => {
-      console.log(res);
+      this.onClose();
     });
   }
 
@@ -83,8 +85,6 @@ export class RoleModalComponent implements OnInit {
     const permissions = this.form.get("permissions")?.value as string[];
 
     if (checkbox.checked) {
-      console.log("Value", value);
-      console.log("Permissions", permissions);
       if (!permissions.includes(value)) {
         permissions.push(value);
       }
@@ -131,5 +131,9 @@ export class RoleModalComponent implements OnInit {
       colorHex: undefined,
       claims: formValue.permissions!,
     };
+  }
+
+  onClose() {
+    this.modalService.close();
   }
 }

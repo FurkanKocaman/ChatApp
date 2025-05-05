@@ -6,6 +6,7 @@ import { RoleService } from "../../../../../core/services/role.service";
 import { RoleResponse } from "../../../../../core/models/responses/role-response.model";
 import { ChannelService } from "../../../../../core/services/channel.service";
 import { ChannelCreateRequest, ChannelUpdateRequest } from "../../../../../core/models/requests";
+import { ModalService } from "../../../../../core/services/modal.service";
 
 @Component({
   selector: "app-channel-modal",
@@ -21,6 +22,7 @@ export class ChannelModalComponent implements OnInit {
   private fb = inject(FormBuilder);
   private roleService = inject(RoleService);
   private channelService = inject(ChannelService);
+  private modalService = inject(ModalService);
 
   isEdit: boolean = true;
 
@@ -54,11 +56,15 @@ export class ChannelModalComponent implements OnInit {
 
   createChannel() {
     console.log(this.toChannelCreateRequest());
-    this.channelService.createChannel(this.toChannelCreateRequest()).subscribe((res) => {});
+    this.channelService.createChannel(this.toChannelCreateRequest()).subscribe((res) => {
+      this.modalService.close();
+    });
   }
 
   updateChannel() {
-    this.channelService.updateChannel(this.toChannelUpdateRequest()).subscribe((res) => {});
+    this.channelService.updateChannel(this.toChannelUpdateRequest()).subscribe((res) => {
+      this.modalService.close();
+    });
   }
 
   getRoles() {
@@ -144,5 +150,9 @@ export class ChannelModalComponent implements OnInit {
     } else {
       this.createChannel();
     }
+  }
+
+  onClose() {
+    this.modalService.close();
   }
 }

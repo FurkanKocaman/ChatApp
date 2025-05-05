@@ -40,7 +40,7 @@ export class ChatLayoutComponent implements OnInit {
   constructor(private userService: UserService, private signalService: SignalChatService) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe((user) => {
+    this.userService.user$.subscribe((user) => {
       this.user = user;
       this.signalService.startConnection();
     });
@@ -73,6 +73,5 @@ export class ChatLayoutComponent implements OnInit {
 
   closeSidebar() {
     this.isSidebarOpen = false;
-    console.log(this.isSidebarOpen);
   }
 }

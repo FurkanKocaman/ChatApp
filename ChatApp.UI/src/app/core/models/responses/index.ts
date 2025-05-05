@@ -7,3 +7,4 @@ export * from "./get-single-channel.model";
 export * from "./role-response.model";
 export * from "./role-details-response.model";
 export * from "./moderated-server-response.model";
+export * from "./paginated-response.model";

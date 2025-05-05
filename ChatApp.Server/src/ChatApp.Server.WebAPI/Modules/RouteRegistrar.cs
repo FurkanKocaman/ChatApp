@@ -1,4 +1,6 @@
-﻿namespace ChatApp.Server.WebAPI.Modules;
+﻿using ChatApp.Server.WebAPI.Modules.v1;
+
+namespace ChatApp.Server.WebAPI.Modules;
 
 public static class RouteRegistrar
 {

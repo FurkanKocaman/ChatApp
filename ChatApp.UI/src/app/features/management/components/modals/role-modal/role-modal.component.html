@@ -1,7 +1,13 @@
 <div class="dark:bg-gray-900 bg-gray-50 rounded-lg flex flex-col w-[100dvw] md:w-[40dvw] pb-10">
   <div class="flex justify-end">
     <button class="cursor-pointer">
-      <svg class="size-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        class="size-10"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        (click)="onClose()"
+      >
         <path
           opacity="0.5"
           d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
@@ -52,7 +58,9 @@
 
       <div class="flex flex-row justify-end mt-3 items-center">
         <button
+          type="button"
           class="dark:text-gray-400 text-gray-700 dark:bg-gray-800 bg-gray-50 border rounded-md dark:border-gray-700 border-gray-400 py-3 px-3 w-fit text-sm"
+          (click)="onClose()"
         >
           Close
         </button>

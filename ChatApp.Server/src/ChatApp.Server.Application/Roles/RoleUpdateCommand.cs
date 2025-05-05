@@ -32,14 +32,18 @@ internal sealed class RoleUpdateCommandHandler(
         var toRemove = existingClaims.Where(p => !request.Claims.Contains(p.Value)).ToList();
         foreach ( var claim in toRemove)
         {
-            await roleManager.RemoveClaimAsync(role, claim);
+            var removeResult = await roleManager.RemoveClaimAsync(role, claim);
+            if (!removeResult.Succeeded)
+                return Result<string>.Failure("Failed to remove old claims");
         }
 
-        var toAdd = request.Claims.Where(p => existingClaims.Any(c => c.Value == p)).ToList();
+        var toAdd = request.Claims.Where(p => existingClaims.All(c => c.Value != p)).ToList();
 
-        foreach( var claim in toAdd)
+        foreach ( var claim in toAdd)
         {
-            await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("permission", claim));
+            var addResult = await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("permission", claim));
+            if (!addResult.Succeeded)
+                return Result<string>.Failure("Failed to add new claims");
         }
 
         return Result<string>.Succeed("Role updated successfully");

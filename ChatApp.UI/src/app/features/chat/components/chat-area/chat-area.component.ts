@@ -23,7 +23,7 @@ import { MessageService } from "../../../../core/services/message.service";
 import { mapMessageResponse, Message } from "../../../../core/models/entities";
 import { MessageSendRequest } from "../../../../core/models/requests";
 import { SignalChatService } from "../../../../core/services/signal-chat.service";
-import { BehaviorSubject, fromEvent, Subscription } from "rxjs";
+import { BehaviorSubject, fromEvent, Subject, Subscription, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-chat-area",
@@ -32,10 +32,13 @@ import { BehaviorSubject, fromEvent, Subscription } from "rxjs";
   templateUrl: "./chat-area.component.html",
   styleUrl: "./chat-area.component.css",
 })
-export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges, AfterViewChecked {
+export class ChatAreaComponent implements OnInit, OnChanges, AfterViewChecked {
   @ViewChild("chatContainer") private chatContainer!: ElementRef;
 
   @Output() open = new EventEmitter<void>();
+
+  private destroy$ = new Subject<void>();
+  private messageSubscription: Subscription | null = null;
 
   constructor(
     private themeService: ThemeService,
@@ -66,25 +69,23 @@ export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges, Afte
       next: (res) => {
         if (res) {
           this.request.channelId = res.id;
-          this.messageService.getMessages(res!.id).subscribe((res) => {
+
+          this.messageService.getMessages(res.id).subscribe((res) => {
             this.messages = res;
             this.scrollToBottom();
           });
-          this.signalService.receiveChannelMessage((message) => {
+
+          if (this.messageSubscription) {
+            this.messageSubscription.unsubscribe();
+          }
+
+          this.messageSubscription = this.signalService.receiveChannelMessage((message) => {
             this.messages.push(mapMessageResponse([message])[0]);
             this.scrollToBottom();
           });
         }
       },
     });
-  }
-
-  ngAfterViewInit() {
-    // const messageContainers = document.querySelectorAll(".message-container");
-    // messageContainers.forEach((el) => {
-    //   el.classList.add("notranslate");
-    //   el.setAttribute("translate", "no");
-    // });
   }
 
   ngAfterViewChecked(): void {
@@ -98,8 +99,16 @@ export class ChatAreaComponent implements OnInit, AfterViewInit, OnChanges, Afte
     this.scrollToBottom();
   }
 
+  ngOnDestroy(): void {
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   sendMessage() {
-    if (this.request.channelId) {
+    if (this.request.channelId && this.request.content) {
       this.messageService.sendMessage(this.request).subscribe((res) => {
         this.request.content = "";
         this.scrollPending = true;

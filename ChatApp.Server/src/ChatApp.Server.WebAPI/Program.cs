@@ -1,6 +1,5 @@
 using ChatApp.Server.Application;
 using ChatApp.Server.Infrastructure;
-using ChatApp.Server.WebAPI.Controllers;
 using ChatApp.Server.WebAPI.Modules;
 using ChatApp.Server.WebAPI;
 using Microsoft.AspNetCore.OData;
@@ -10,6 +9,7 @@ using System.Threading.RateLimiting;
 using ChatApp.Server.Infrastructure.SignalR;
 using Microsoft.AspNetCore.Authentication;
 using PersonelYonetim.Server.WebAPI;
+using ChatApp.Server.WebAPI.Controllers.v1;
 
 var builder = WebApplication.CreateBuilder(args);
 

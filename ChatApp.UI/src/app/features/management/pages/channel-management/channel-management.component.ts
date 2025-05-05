@@ -71,6 +71,7 @@ export class ChannelManagementComponent implements OnInit {
 
   setSelectedServer(server: Server) {
     this.selectedServer = server;
+    this.serverService.setSelectedServer(server);
     this.getChannels();
   }
 

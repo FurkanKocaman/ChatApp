@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ChatApp.Server.Application.Servers;
 public sealed record GetUserJoinedServersQuery(
-    ) : IRequest<IQueryable<GetUserJoinedServersQueryResponse>>;
+    ) : IRequest<List<GetUserJoinedServersQueryResponse>>;
 
 
 public sealed class GetUserJoinedServersQueryResponse
@@ -13,21 +13,20 @@ public sealed class GetUserJoinedServersQueryResponse
     public Guid Id { get; set; }
     public string Name { get; set; } = default!;
     public string? IconUrl { get; set; }
-    //public DateTimeOffset? JoinedAt { get; set; }
 }
 
 internal sealed class GetUserJoinedServersQueryHandler(
     ICurrentUserService currentUserService,
     IServerRepository serverRepository,
     IServerMemberRepository serverMemberRepository
-    ) : IRequestHandler<GetUserJoinedServersQuery, IQueryable<GetUserJoinedServersQueryResponse>>
+    ) : IRequestHandler<GetUserJoinedServersQuery, List<GetUserJoinedServersQueryResponse>>
 {
-    public Task<IQueryable<GetUserJoinedServersQueryResponse>> Handle(GetUserJoinedServersQuery request, CancellationToken cancellationToken)
+    public Task<List<GetUserJoinedServersQueryResponse>> Handle(GetUserJoinedServersQuery request, CancellationToken cancellationToken)
     {
         Guid? userId = currentUserService.UserId;
 
         if(!userId.HasValue)
-            throw new ArgumentNullException(nameof(userId));
+            return Task.FromResult(new List<GetUserJoinedServersQueryResponse>()); 
 
         var serverMembers = serverMemberRepository.Where(p => p.UserId == userId);
 
@@ -41,7 +40,7 @@ internal sealed class GetUserJoinedServersQueryHandler(
                     Id = ss.server.Id,
                     Name = ss.server.Name,
                     IconUrl = ss.server.IconUrl,
-                }).AsQueryable();
+                }).ToList();
 
         return Task.FromResult(response);
     }

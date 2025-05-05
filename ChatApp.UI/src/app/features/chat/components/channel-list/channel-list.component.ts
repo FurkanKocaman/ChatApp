@@ -72,7 +72,9 @@ export class ChannelListComponent implements OnInit, AfterViewInit {
   }
 
   joinChannel(id: string) {
-    if (this.selectedChannelId != "") this.leaveChannel(this.selectedChannelId);
+    if (this.selectedChannelId != "") {
+      this.leaveChannel(this.selectedChannelId);
+    }
     this.signalService.joinChannel(id);
     this.selectedChannelId = id;
   }

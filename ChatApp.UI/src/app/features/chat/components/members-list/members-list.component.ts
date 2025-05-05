@@ -37,7 +37,6 @@ export class MembersListComponent implements OnInit, AfterViewInit {
         this.serverService.getServerMembers(res.id).subscribe((res) => {
           if (res) {
             this.serverMembers = res;
-            console.log(res);
           }
         });
       }

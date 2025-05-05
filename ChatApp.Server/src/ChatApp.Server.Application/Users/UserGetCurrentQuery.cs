@@ -20,10 +20,6 @@ public sealed class UserGetCurrentQueryResponse
     public DateTimeOffset? BirthOfDate { get; set; }
     public string? Gender { get; set; }
     public DateTimeOffset? LastActive { get; set; }
-    //public ICollection<ServerMember> ServerMemberships { get; set; } = new List<ServerMember>();
-    //public ICollection<ConversationParticipant> Conversations { get; set; } = new List<ConversationParticipant>();
-    //public ICollection<FriendShip> FriendShips { get; set; } = new List<FriendShip>();
-
     public DateTimeOffset CreatedAt { get; set; }
     public Guid CreateUserId { get; set; }
     public string CreateUserName { get; set; } = default!;
